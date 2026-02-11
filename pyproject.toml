@@ -5,4 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tax_report_generation"
 version = "1.0.0"
+dependencies = [
+    "pandas",
+]
 
