@@ -6,7 +6,7 @@ import re
 
 import pandas as pd
 
-from csv_to_dataframe import read_csvs_to_dataframe
+from tax_report_generation.csv_to_dataframe import read_csvs_to_dataframe
 
 
 def find_dividend_payments(df: pd.DataFrame) -> pd.DataFrame:
