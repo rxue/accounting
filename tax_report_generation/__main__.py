@@ -1,3 +1,3 @@
-from tax_report_generation.transaction_filters import main
+from tax_report_generation.transactions_analyzer import main
 
 main()
