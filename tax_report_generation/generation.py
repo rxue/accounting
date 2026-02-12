@@ -154,6 +154,9 @@ class TaxReport:
 
         total_financial_asset_cents = sum(book_value for _, book_value in trading_profit_and_book_values.values())
 
+        if business_expense_cents + total_financial_asset_cents + self.cash_in_cents - business_income_cents != sum_money_in_cents(self.cash_infusions_df):
+            raise ValueError("Checksum on tax report items failed")
+
         return TaxReportItemsInCent(
             business_income=business_income_cents,
             business_expense=business_expense_cents,
@@ -185,8 +188,6 @@ def main():
     taxReport = TaxReport(df)
     taxReportFactors = taxReport.calculate_items()
     print(taxReportFactors)
-    print(f"{taxReportFactors.business_expense + taxReportFactors.financial_asset + taxReportFactors.cash}")
-    print(f"cash infusion: {sum_money_in_cents(taxReport.cash_infusions_df)}")
 
 
 if __name__ == "__main__":
