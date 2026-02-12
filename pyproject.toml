@@ -9,3 +9,8 @@ dependencies = [
     "pandas",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
