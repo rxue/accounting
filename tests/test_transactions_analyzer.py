@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Unit tests for transactions_analyzer module."""
 
-from tax_report_generation.transactions_analyzer import Lot, stock_trading_profit_in_fifo
+from tax_report_generation.generation import Lot, stock_trading_profit_in_fifo
 
 
 def test_stock_trading_profit_in_fifo_base():

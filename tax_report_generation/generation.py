@@ -24,7 +24,7 @@ class Lot:
 
 
 @dataclass
-class TaxReportFactorsInCent:
+class TaxReportItemsInCent:
     business_income: int
     business_expense: int
     cash: int
@@ -140,7 +140,7 @@ class TaxReport:
             result[symbol] = (profit, book_value)
         return result
 
-    def calculate_items(self) -> TaxReportFactorsInCent:
+    def calculate_items(self) -> TaxReportItemsInCent:
         """Generate a tax report with business income and expenses.
 
         Returns:
@@ -154,7 +154,7 @@ class TaxReport:
 
         total_financial_asset_cents = sum(book_value for _, book_value in trading_profit_and_book_values.values())
 
-        return TaxReportFactorsInCent(
+        return TaxReportItemsInCent(
             business_income=business_income_cents,
             business_expense=business_expense_cents,
             cash=self.cash_in_cents,
