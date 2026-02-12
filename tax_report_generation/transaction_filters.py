@@ -42,7 +42,7 @@ def find_all_stock_tradings_by_symbol(df: pd.DataFrame) -> dict[str, pd.DataFram
         viesti = row["Viesti"].strip()
         match = match_trading(viesti)
         if match:
-            symbol = match.group(1)
+            symbol = match.group(2)
             if symbol not in symbol_to_row_index_list_map:
                 symbol_to_row_index_list_map[symbol] = []
             symbol_to_row_index_list_map[symbol].append(idx)
@@ -74,6 +74,24 @@ def find_expenses(df: pd.DataFrame) -> pd.DataFrame:
     return negative[~is_trading]
 
 
+def total_rows_checksum(df: pd.DataFrame) -> bool:
+    """Verify that all rows are accounted for by the filter functions.
+
+    Args:
+        df: DataFrame containing transaction data.
+
+    Returns:
+        True if the sum of filtered rows equals total rows, False otherwise.
+    """
+    cash_infusions = find_cash_infusion(df)
+    dividend_payments = find_dividend_payments(df)
+    expenses = find_expenses(df)
+    stock_tradings_by_symbol = find_all_stock_tradings_by_symbol(df)
+    total_stock_trading_rows = sum(len(symbol_df) for symbol_df in stock_tradings_by_symbol.values())
+    whole_sum = total_stock_trading_rows + len(dividend_payments) + len(expenses) + len(cash_infusions)
+    return len(df) > 1 and len(df) == whole_sum
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Filter transactions from CSV files"
@@ -83,14 +101,7 @@ def main():
 
     df = read_csvs_to_dataframe(args.directory)
     print(f"Total rows: {len(df)}")
-    cash_infusions = find_cash_infusion(df)
-    dividend_payments = find_dividend_payments(df)
-    expenses = find_expenses(df)
-    stock_tradings_by_symbol = find_all_stock_tradings_by_symbol(df)
-    total_stock_trading_rows = sum(len(symbol_df) for symbol_df in stock_tradings_by_symbol.values())
-    print(f"total stock trading rows is {total_stock_trading_rows}")
-    whole_sum = total_stock_trading_rows + len(dividend_payments) + len(expenses) + len(cash_infusions)
-    if len(df) > 1 and len(df) == whole_sum:
+    if total_rows_checksum(df):
         print("check sum passed")
     else:
         print("WARNING: check sum failed!")

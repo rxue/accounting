@@ -11,7 +11,8 @@ from tax_report_generation.transaction_filters import (
     find_dividend_payments,
     find_all_stock_tradings_by_symbol,
     find_expenses,
-    match_trading,
+    match_trading, find_cash_infusion,
+    total_rows_checksum,
 )
 
 
@@ -171,7 +172,15 @@ def main():
     df = read_csvs_to_dataframe(args.directory)
     print(df)
     print("------------Report---------------")
-    print(calculate_tax_report_factors(df))
+    taxReportFactors = calculate_tax_report_factors(df)
+    print(taxReportFactors)
+    print(f"{taxReportFactors.business_expense + taxReportFactors.financial_asset + taxReportFactors.cash}")
+    cash_infusions = find_cash_infusion(df)
+    print(f"cash infusion: {sum_money_in_cents(cash_infusions)}")
+    if total_rows_checksum(df):
+        print("row checksum passed")
+    else:
+        print("WARNING: row checksum failed!")
 
 
 if __name__ == "__main__":
