@@ -12,7 +12,6 @@ from tax_report_generation.transaction_filters import (
     find_all_stock_tradings_by_symbol,
     find_expenses,
     match_trading, find_cash_infusion,
-    total_rows_checksum,
 )
 
 
@@ -116,50 +115,61 @@ def sum_money_in_cents(df: pd.DataFrame) -> int:
     return int(cents.sum())
 
 
-def calculate_tax_report_factors(df: pd.DataFrame) -> TaxReportFactorsInCent:
-    """Generate a tax report with business income and expenses.
+class TaxReport:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df
+        self.all_tradings_by_symbol = find_all_stock_tradings_by_symbol(df)
+        self.dividend_payments_df = find_dividend_payments(df)
+        self.expenses_df = find_expenses(df)
+        self.cash_in_cents = sum_money_in_cents(df)
+        self.cash_infusions_df = find_cash_infusion(df)
+        if not self._total_rows_checksum():
+            raise ValueError("Row separation checksum failed: filtered rows do not account for all rows in the DataFrame")
 
-    Args:
-        df: DataFrame containing transaction data.
-
-    Returns:
-        Report object with business income and expenses.
-    """
-    def stock_trading_profit_and_book_values_by_symbol(all_tradings: dict[str, pd.DataFrame]) -> dict[str, tuple[int, int]]:
+    def _stock_trading_profit_and_book_values_by_symbol(self) -> dict[str, tuple[int, int]]:
         """Calculate capital gains and book values of each Stock.
-
-        Args:
-            all_tradings: all the stock trading transactions
 
         Returns:
             map whose key is the stock symbol, and the value is the (profit_in_cent, book_value_in_cent)
         """
         result = {}
-        for symbol, symbol_df in all_tradings.items():
+        for symbol, symbol_df in self.all_tradings_by_symbol.items():
             lots = transfer_transactions_to_lots(symbol_df)
             profit, remaining_lots = stock_trading_profit_in_fifo(lots)
             book_value = sum(lot.money_amount_in_cent for lot in remaining_lots)
             result[symbol] = (profit, book_value)
         return result
 
-    all_tradings_by_symbol = find_all_stock_tradings_by_symbol(df)
-    trading_profit_and_book_values = stock_trading_profit_and_book_values_by_symbol(all_tradings_by_symbol)
-    total_trading_profit_cents = sum(profit for profit, _ in trading_profit_and_book_values.values())
-    dividend_payments_df = find_dividend_payments(df)
-    business_income_cents = sum_money_in_cents(pd.concat([dividend_payments_df])) + total_trading_profit_cents
+    def calculate_items(self) -> TaxReportFactorsInCent:
+        """Generate a tax report with business income and expenses.
 
-    # Business expenses: negative amounts excluding stock trading (Laji != 700)
-    expenses_df = find_expenses(df)
-    business_expense_cents = abs(sum_money_in_cents(expenses_df))
+        Returns:
+            Report object with business income and expenses.
+        """
+        trading_profit_and_book_values = self._stock_trading_profit_and_book_values_by_symbol()
+        total_trading_profit_cents = sum(profit for profit, _ in trading_profit_and_book_values.values())
+        business_income_cents = sum_money_in_cents(pd.concat([self.dividend_payments_df])) + total_trading_profit_cents
 
-    total_financial_asset_cents = sum(book_value for _, book_value in trading_profit_and_book_values.values())
+        business_expense_cents = abs(sum_money_in_cents(self.expenses_df))
 
-    return TaxReportFactorsInCent(
-        business_income=business_income_cents,
-        business_expense=business_expense_cents,
-        cash=sum_money_in_cents(df),
-        financial_asset=total_financial_asset_cents
-    )
+        total_financial_asset_cents = sum(book_value for _, book_value in trading_profit_and_book_values.values())
+
+        return TaxReportFactorsInCent(
+            business_income=business_income_cents,
+            business_expense=business_expense_cents,
+            cash=self.cash_in_cents,
+            financial_asset=total_financial_asset_cents
+        )
+
+    def _total_rows_checksum(self) -> bool:
+        """Verify that all rows are accounted for by the filter functions.
+
+        Returns:
+            True if the sum of filtered rows equals total rows, False otherwise.
+        """
+        total_stock_trading_rows = sum(len(symbol_df) for symbol_df in self.all_tradings_by_symbol.values())
+        whole_sum = total_stock_trading_rows + len(self.dividend_payments_df) + len(self.expenses_df) + len(self.cash_infusions_df)
+        return len(self.df) > 1 and len(self.df) == whole_sum
 
 
 def main():
@@ -172,15 +182,11 @@ def main():
     df = read_csvs_to_dataframe(args.directory)
     print(df)
     print("------------Report---------------")
-    taxReportFactors = calculate_tax_report_factors(df)
+    taxReport = TaxReport(df)
+    taxReportFactors = taxReport.calculate_items()
     print(taxReportFactors)
     print(f"{taxReportFactors.business_expense + taxReportFactors.financial_asset + taxReportFactors.cash}")
-    cash_infusions = find_cash_infusion(df)
-    print(f"cash infusion: {sum_money_in_cents(cash_infusions)}")
-    if total_rows_checksum(df):
-        print("row checksum passed")
-    else:
-        print("WARNING: row checksum failed!")
+    print(f"cash infusion: {sum_money_in_cents(taxReport.cash_infusions_df)}")
 
 
 if __name__ == "__main__":
