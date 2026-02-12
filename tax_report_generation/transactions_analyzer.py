@@ -24,11 +24,11 @@ class Lot:
 
 
 @dataclass
-class Report:
-    business_income: float
-    business_expense: float
-    cash: float
-    financial_asset: float
+class TaxReportFactorsInCent:
+    business_income: int
+    business_expense: int
+    cash: int
+    financial_asset: int
 
 
 def transfer_transactions_to_lots(df: pd.DataFrame) -> list[Lot]:
@@ -101,21 +101,21 @@ def stock_trading_profit_in_fifo(transactions: list[Lot]) -> (int, list[Lot]):
     remaining_lots = [Lot(date=date, type="BUY", share_amount=shares, money_amount_in_cent=cost_in_cents) for date, shares, cost_in_cents in buy_queue]
     return total_profit_cents, remaining_lots
 
-def sum_money(df: pd.DataFrame) -> float:
-    """Sum money values in a DataFrame using cents for precision.
+def sum_money_in_cents(df: pd.DataFrame) -> int:
+    """Sum money values in a DataFrame in cents.
 
     Args:
         df: DataFrame containing 'Määrä EUROA' column.
 
     Returns:
-        Sum of the money values.
+        Sum of the money values in cents.
     """
     values = df["Määrä EUROA"].str.replace(",", ".").astype(float)
     cents = (values * 100).round().astype(int)
-    return cents.sum() / 100
+    return int(cents.sum())
 
 
-def tax_report(df: pd.DataFrame) -> Report:
+def calculate_tax_report_factors(df: pd.DataFrame) -> TaxReportFactorsInCent:
     """Generate a tax report with business income and expenses.
 
     Args:
@@ -143,21 +143,21 @@ def tax_report(df: pd.DataFrame) -> Report:
 
     all_tradings_by_symbol = find_all_stock_tradings_by_symbol(df)
     trading_profit_and_book_values = stock_trading_profit_and_book_values_by_symbol(all_tradings_by_symbol)
-    total_trading_profit = sum(profit for profit, _ in trading_profit_and_book_values.values()) / 100
+    total_trading_profit_cents = sum(profit for profit, _ in trading_profit_and_book_values.values())
     dividend_payments_df = find_dividend_payments(df)
-    business_income = sum_money(pd.concat([dividend_payments_df])) + total_trading_profit
+    business_income_cents = sum_money_in_cents(pd.concat([dividend_payments_df])) + total_trading_profit_cents
 
     # Business expenses: negative amounts excluding stock trading (Laji != 700)
     expenses_df = find_expenses(df)
-    business_expense = abs(sum_money(expenses_df))
+    business_expense_cents = abs(sum_money_in_cents(expenses_df))
 
-    total_financial_asset = sum(book_value for _, book_value in trading_profit_and_book_values.values()) / 100
+    total_financial_asset_cents = sum(book_value for _, book_value in trading_profit_and_book_values.values())
 
-    return Report(
-        business_income=business_income,
-        business_expense=business_expense,
-        cash=sum_money(df),
-        financial_asset=total_financial_asset
+    return TaxReportFactorsInCent(
+        business_income=business_income_cents,
+        business_expense=business_expense_cents,
+        cash=sum_money_in_cents(df),
+        financial_asset=total_financial_asset_cents
     )
 
 
@@ -171,7 +171,7 @@ def main():
     df = read_csvs_to_dataframe(args.directory)
     print(df)
     print("------------Report---------------")
-    print(tax_report(df))
+    print(calculate_tax_report_factors(df))
 
 
 if __name__ == "__main__":
