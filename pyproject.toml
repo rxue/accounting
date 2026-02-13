@@ -3,12 +3,15 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tax_report_generation"
+name = "accounting"
 version = "1.0.0"
 requires-python = ">=3.12.3"
 dependencies = [
     "pandas",
 ]
+
+[tool.setuptools.packages.find]
+include = ["tax_report_generation*", "ai_tool*"]
 
 [project.optional-dependencies]
 test = [
