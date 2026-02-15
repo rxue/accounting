@@ -8,13 +8,16 @@ version = "1.0.0"
 requires-python = ">=3.12.3"
 dependencies = [
     "pandas",
+    "reportlab",
 ]
 
 [tool.setuptools.packages.find]
-include = ["tax_report_generation*", "ai_tool*"]
+include = ["tax_report*", "ai_tool*"]
 
 [project.optional-dependencies]
 test = [
     "pytest",
 ]
-
+ai_tool = [
+    "openai",
+]

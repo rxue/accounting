@@ -3,7 +3,7 @@
 
 import pandas as pd
 
-from tax_report_generation.transaction_filters import find_expenses, match_trading
+from tax_report.transaction_filters import find_expenses, match_trading
 
 
 def test_find_expenses():
