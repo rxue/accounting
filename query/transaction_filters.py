@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Filter functions for transaction DataFrames."""
+"""Filter functions for transaction DataFrames. All functions' return type is based on pf.DataFrame"""
 
 import argparse
 import re

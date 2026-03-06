@@ -1,8 +1,10 @@
 import re
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
 import pandas as pd
+
+from financialstatements.trading_calc import ProfitCalculationResult
+
 
 
 class IncomeItemInCent(ABC):
@@ -16,28 +18,40 @@ class IncomeItemInCent(ABC):
     def gross_value(self) -> int: ...
 
 
-@dataclass
-class DividendIncomeItem(IncomeItemInCent):
-    transactions: pd.DataFrame
+class TradingIncome(IncomeItemInCent):
+    def __init__(self, profit_calculation_results: list[ProfitCalculationResult]):
+        self.profit_calculation_results = profit_calculation_results
+
+    def gross_value(self) -> int:
+        return sum(r.profit_in_cent for r in self.profit_calculation_results)
+
+
+class DividendIncome(IncomeItemInCent):
+    def __init__(self, transactions: pd.DataFrame):
+        self.transactions = transactions
 
     def gross_value(self) -> int:
         return sum(
-            DividendIncomeItem._gross_value_per_transaction(detail)
+            DividendIncome._gross_value_per_transaction(detail)
             for detail in self.transactions["Viesti"]
         )
 
     @staticmethod
-    def _gross_value_per_transaction(transaction_detail: str) -> int:
-        amount_match = re.search(r"Tuoton määrä\s+([\d,]+)USD", transaction_detail)
+    def _gross_value_in_base_unit(transaction_detail: str) -> float:
+        amount_match = re.search(r"Tuoton määrä\s+([\d,]+)[A-Z]{3}", transaction_detail)
         if not amount_match:
             raise ValueError("Could not parse gross amount from transaction detail")
-        amount_usd = float(amount_match.group(1).replace(",", "."))
-        exchange_rate = DividendIncomeItem._exchange_rate_per_transaction(transaction_detail)
+        return float(amount_match.group(1).replace(",", "."))
+
+    @staticmethod
+    def _gross_value_per_transaction(transaction_detail: str) -> int:
+        amount_usd = DividendIncome._gross_value_in_base_unit(transaction_detail)
+        exchange_rate = DividendIncome._exchange_rate_per_transaction(transaction_detail)
         return int(amount_usd / exchange_rate * 100)
 
     def withholding_tax(self) -> int:
         return sum(
-            DividendIncomeItem.withholding_tax_per_transaction(detail)
+            DividendIncome.withholding_tax_per_transaction(detail)
             for detail in self.transactions["Viesti"]
         )
 
@@ -50,9 +64,9 @@ class DividendIncomeItem(IncomeItemInCent):
 
     @staticmethod
     def withholding_tax_per_transaction(transaction_detail: str) -> int:
-        tax_match = re.search(r"Lähdevero\s+\S+\s+%\s+([\d,]+)USD", transaction_detail)
+        tax_match = re.search(r"Lähdevero\s+\S+\s+%\s+([\d,]+)[A-Z]{3}", transaction_detail)
         if not tax_match:
             raise ValueError("Could not parse tax from transaction detail")
         tax_usd = float(tax_match.group(1).replace(",", "."))
-        exchange_rate = DividendIncomeItem._exchange_rate_per_transaction(transaction_detail)
+        exchange_rate = DividendIncome._exchange_rate_per_transaction(transaction_detail)
         return int(tax_usd / exchange_rate * 100)

@@ -19,7 +19,7 @@ def _build_typst_source(report: TaxReportItemsInCent) -> bytes:
         Typst source as bytes.
     """
     items = [
-        ("Business Income", report.business_income),
+        ("Business Income", report.dividend_income),
         ("Business Expense", report.business_expense),
         ("Cash", report.cash),
         ("Financial Asset", report.financial_asset),

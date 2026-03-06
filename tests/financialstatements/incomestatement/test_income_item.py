@@ -1,6 +1,6 @@
 import pandas as pd
 
-from financialstatements.income_item import DividendIncomeItem
+from financialstatements.incomestatement.income_item import DividendIncome
 
 TRANSACTION_DETAIL = (
     " OP Säilytys Oy                     SIRIUSXM HOLDINGS                  "
@@ -11,8 +11,29 @@ TRANSACTION_DETAIL = (
 )
 
 
+TRANSACTION_DETAIL_CAD = (
+    " OP Säilytys Oy                     TELUS CORP                         "
+    "CA87971M1032                       Osinkotuotto                       "
+    "Osinko        0,4184        CAD/KplOmistettu määrä             50Kpl  "
+    "Tuoton määrä               20,92CADLähdevero  CA15,0   %       3,14CAD"
+    "Val.kurssi                1,6188"
+)
+
+
+def test_gross_value_per_transaction_cad():
+    assert DividendIncome._gross_value_per_transaction(TRANSACTION_DETAIL_CAD) == 1292
+
+
+def test_gross_value_in_base_unit():
+    assert DividendIncome._gross_value_in_base_unit(TRANSACTION_DETAIL) == 24.30
+
+
 def test_withholding_tax_per_transaction():
-    assert DividendIncomeItem.withholding_tax_per_transaction(TRANSACTION_DETAIL) == 307
+    assert DividendIncome.withholding_tax_per_transaction(TRANSACTION_DETAIL) == 307
+
+
+def test_withholding_tax_per_transaction_cad():
+    assert DividendIncome.withholding_tax_per_transaction(TRANSACTION_DETAIL_CAD) == 193
 
 
 def test_withholding_tax():
@@ -28,7 +49,7 @@ def test_withholding_tax():
         "Viesti": TRANSACTION_DETAIL,
         "Arkistointitunnus": "2602275OMH00001897",
     }])
-    item = DividendIncomeItem(transactions=df)
+    item = DividendIncome(transactions=df)
     assert item.withholding_tax() == 307
 
 
@@ -45,5 +66,5 @@ def test_gross_value():
         "Viesti": TRANSACTION_DETAIL,
         "Arkistointitunnus": "2602275OMH00001897",
     }])
-    item = DividendIncomeItem(transactions=df)
+    item = DividendIncome(transactions=df)
     assert item.gross_value() == 2046
