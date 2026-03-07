@@ -4,7 +4,7 @@ from financialstatements.balance_sheet import BalanceSheetInCent
 from financialstatements.incomestatement.income_item import DividendIncomeInCent
 from financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
 from financialstatements.trading_calc import profit_and_book_values_by_symbol
-from query.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses
+from financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses
 
 
 def generate(df: pd.DataFrame) -> tuple[IncomeStatementInCent, BalanceSheetInCent]:
@@ -23,7 +23,7 @@ def generate(df: pd.DataFrame) -> tuple[IncomeStatementInCent, BalanceSheetInCen
 
 def main():
     import argparse
-    from tax_report.csv_to_dataframe import read_csvs_to_dataframe
+    from financialstatements.csv_to_dataframe import read_csvs_to_dataframe
 
     parser = argparse.ArgumentParser(description="Generate financial statements from CSV files")
     parser.add_argument("directory", help="Directory containing CSV files")

@@ -3,7 +3,7 @@
 
 import pandas as pd
 
-from query.transaction_filters import (
+from financialstatements.transaction_filters import (
     find_cash_infusion,
     find_all_stock_tradings_by_symbol,
     find_dividend_payments,

@@ -3,7 +3,7 @@
 import pytest
 import pandas as pd
 
-from tax_report.csv_to_dataframe import read_csvs_to_dataframe
+from financialstatements.csv_to_dataframe import read_csvs_to_dataframe
 
 
 @pytest.fixture

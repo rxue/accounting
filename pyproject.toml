@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["tax_report*", "ai_tool*"]
+include = ["financialstatements*", "ai_tool*"]
 
 [project.optional-dependencies]
 test = [

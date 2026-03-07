@@ -5,7 +5,7 @@ import argparse
 
 import typst
 
-from tax_report.csv_to_dataframe import read_csvs_to_dataframe
+from financialstatements.csv_to_dataframe import read_csvs_to_dataframe
 from tax_report.generation import TaxReport, TaxReportItemsInCent
 
 

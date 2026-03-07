@@ -18,7 +18,7 @@ class ProfitCalculationResult:
 
 
 def transfer_transactions_to_lots(df: pd.DataFrame) -> list[Lot]:
-    from query.transaction_filters import match_trading
+    from financialstatements.transaction_filters import match_trading
     transactions = []
     for _, row in df.iterrows():
         viesti = row["Viesti"].strip()

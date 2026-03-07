@@ -4,7 +4,7 @@ import pandas as pd
 
 from financialstatements.incomestatement.income_item import DividendIncomeInCent
 from financialstatements.trading_calc import profit_and_book_values_by_symbol
-from query.transaction_filters import find_dividend_payments, find_all_stock_tradings_by_symbol, find_service_charges, find_expenses
+from financialstatements.transaction_filters import find_dividend_payments, find_all_stock_tradings_by_symbol, find_service_charges, find_expenses
 
 
 @dataclass
@@ -32,7 +32,7 @@ def generate_income_statement(gross_trading_income: int, dividend_income: Divide
 
 def main():
     import argparse
-    from tax_report.csv_to_dataframe import read_csvs_to_dataframe
+    from financialstatements.csv_to_dataframe import read_csvs_to_dataframe
 
     parser = argparse.ArgumentParser(description="Generate income statement from CSV files")
     parser.add_argument("directory", help="Directory containing CSV files")
