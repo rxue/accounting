@@ -36,35 +36,27 @@ def test_withholding_tax_per_transaction_cad():
     assert DividendIncome.withholding_tax_per_transaction(TRANSACTION_DETAIL_CAD) == 193
 
 
+SIRIUSXM_USD_ROW = pd.DataFrame([{
+    "Kirjauspäivä": "27.02.2026",
+    "Arvopäivä": "27.02.2026",
+    "Määrä EUROA": "+17,39",
+    "Laji": 710,
+    "Selitys": "ARVOPAPERIT",
+    "Saaja/Maksaja": "OUTLIERX OY",
+    "Saajan tilinumero ja pankin BIC": " ",
+    "Viite": float("nan"),
+    "Viesti": TRANSACTION_DETAIL_USD,
+    "Arkistointitunnus": "2602275OMH00001897",
+}])
+
+
 def test_withholding_tax():
-    df = pd.DataFrame([{
-        "Kirjauspäivä": "27.02.2026",
-        "Arvopäivä": "27.02.2026",
-        "Määrä EUROA": "+17,39",
-        "Laji": 710,
-        "Selitys": "ARVOPAPERIT",
-        "Saaja/Maksaja": "OUTLIERX OY",
-        "Saajan tilinumero ja pankin BIC": " ",
-        "Viite": float("nan"),
-        "Viesti": TRANSACTION_DETAIL_USD,
-        "Arkistointitunnus": "2602275OMH00001897",
-    }])
-    item = DividendIncome(transactions=df)
-    assert item.withholding_tax() == 307
+    assert DividendIncome(transactions=SIRIUSXM_USD_ROW).withholding_tax() == 307
+
+
+def test_reconcile():
+    assert DividendIncome(transactions=SIRIUSXM_USD_ROW).reconcile() is True
 
 
 def test_gross_value():
-    df = pd.DataFrame([{
-        "Kirjauspäivä": "27.02.2026",
-        "Arvopäivä": "27.02.2026",
-        "Määrä EUROA": "+17,39",
-        "Laji": 710,
-        "Selitys": "ARVOPAPERIT",
-        "Saaja/Maksaja": "OUTLIERX OY",
-        "Saajan tilinumero ja pankin BIC": " ",
-        "Viite": float("nan"),
-        "Viesti": TRANSACTION_DETAIL_USD,
-        "Arkistointitunnus": "2602275OMH00001897",
-    }])
-    item = DividendIncome(transactions=df)
-    assert item.gross_value() == 2046
+    assert DividendIncome(transactions=SIRIUSXM_USD_ROW).gross_value() == 2046

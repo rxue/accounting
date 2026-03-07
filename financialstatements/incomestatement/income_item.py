@@ -29,12 +29,17 @@ class TradingIncome(IncomeItemInCent):
 class DividendIncome(IncomeItemInCent):
     def __init__(self, transactions: pd.DataFrame):
         self.transactions = transactions
+        self._gross_value: int | None = None
+        self._withholding_tax: int | None = None
+
+    def _calculate(self) -> None:
+        self._gross_value = sum(DividendIncome._gross_value_per_transaction(detail) for detail in self.transactions["Viesti"])
+        self._withholding_tax = sum(DividendIncome.withholding_tax_per_transaction(detail) for detail in self.transactions["Viesti"])
 
     def gross_value(self) -> int:
-        return sum(
-            DividendIncome._gross_value_per_transaction(detail)
-            for detail in self.transactions["Viesti"]
-        )
+        if self._gross_value is None:
+            self._calculate()
+        return self._gross_value
 
     @staticmethod
     def _gross_value_in_base_unit(transaction_detail: str) -> float:
@@ -49,11 +54,16 @@ class DividendIncome(IncomeItemInCent):
         exchange_rate = DividendIncome._exchange_rate_per_transaction(transaction_detail)
         return int(amount_usd / exchange_rate * 100)
 
+    def reconcile(self) -> bool:
+        if self._gross_value is None:
+            self._calculate()
+        cash_in_cent = round(self.transactions["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100)
+        return self._gross_value - self._withholding_tax == cash_in_cent
+
     def withholding_tax(self) -> int:
-        return sum(
-            DividendIncome.withholding_tax_per_transaction(detail)
-            for detail in self.transactions["Viesti"]
-        )
+        if self._withholding_tax is None:
+            self._calculate()
+        return self._withholding_tax
 
     @staticmethod
     def _exchange_rate_per_transaction(transaction_detail: str) -> float:
