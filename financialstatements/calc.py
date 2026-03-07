@@ -63,6 +63,20 @@ def trading_profit_in_fifo(transactions: list[Lot]) -> tuple[int, list[Lot]]:
     return total_profit_cents, remaining_lots
 
 
+def reconcile(cash_infusion_df: pd.DataFrame, income_statement: "IncomeStatementInCent", balance_sheet: "BalanceSheetInCent") -> bool:
+    from financialstatements.incomestatement.income_statement import IncomeStatementInCent
+    from financialstatements.balance_sheet import BalanceSheetInCent
+    cash_infused = round(cash_infusion_df["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100)
+    net_income = (
+        income_statement.trading_income
+        + income_statement.gross_dividend_income
+        - income_statement.foreign_withholding_tax
+        - income_statement.service_expense
+        - income_statement.other_expense
+    )
+    return cash_infused + net_income == balance_sheet.cash + balance_sheet.financial_securities
+
+
 def profit_and_book_values_by_symbol(stock_tradings_by_symbol: dict[str, pd.DataFrame]) -> list[ProfitCalculationResult]:
     result = []
     for symbol, symbol_df in stock_tradings_by_symbol.items():

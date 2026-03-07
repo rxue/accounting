@@ -3,8 +3,8 @@ import pandas as pd
 from financialstatements.balance_sheet import BalanceSheetInCent
 from financialstatements.incomestatement.income_item import DividendIncomeInCent
 from financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
-from financialstatements.trading_calc import profit_and_book_values_by_symbol
-from financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses
+from financialstatements.calc import profit_and_book_values_by_symbol, reconcile
+from financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses, find_cash_infusion
 
 
 def generate(df: pd.DataFrame) -> tuple[IncomeStatementInCent, BalanceSheetInCent]:
@@ -30,4 +30,7 @@ def main():
     args = parser.parse_args()
 
     df = read_csvs_to_dataframe(args.directory)
-    print(generate(df))
+    income_statement, balance_sheet = generate(df)
+    print(income_statement)
+    print(balance_sheet)
+    print("reconciled" if reconcile(find_cash_infusion(df), income_statement, balance_sheet) else "reconciliation failed")

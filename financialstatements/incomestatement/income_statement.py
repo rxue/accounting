@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import pandas as pd
 
 from financialstatements.incomestatement.income_item import DividendIncomeInCent
-from financialstatements.trading_calc import profit_and_book_values_by_symbol
+from financialstatements.calc import profit_and_book_values_by_symbol
 from financialstatements.transaction_filters import find_dividend_payments, find_all_stock_tradings_by_symbol, find_service_charges, find_expenses
 
 

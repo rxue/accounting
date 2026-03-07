@@ -1,6 +1,6 @@
 import pandas as pd
 
-from financialstatements.trading_calc import Lot, trading_profit_in_fifo
+from financialstatements.calc import Lot, trading_profit_in_fifo
 
 
 def test_stock_trading_profit_in_fifo_base():
