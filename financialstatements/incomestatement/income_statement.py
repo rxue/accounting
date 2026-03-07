@@ -22,12 +22,16 @@ def generate_income_statement(df: pd.DataFrame) -> IncomeStatementInCent:
     all_expenses_df = find_expenses(df)
     all_expense_in_cents = abs(round(all_expenses_df["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100))
     service_expense_cents = abs(round(find_service_charges(all_expenses_df)["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100))
+    gross_dividend_income = dividend_income.gross_value()
+    foreign_withholding_tax = dividend_income.withholding_tax()
+    if not dividend_income.reconcile():
+        raise ValueError("Dividend income reconciliation failed")
     return IncomeStatementInCent(
-        gross_dividend_income=dividend_income.gross_value(),
+        gross_dividend_income=gross_dividend_income,
         trading_income=trading_income.gross_value(),
         service_expense=service_expense_cents,
         other_expense=all_expense_in_cents - service_expense_cents,
-        foreign_withholding_tax=dividend_income.withholding_tax(),
+        foreign_withholding_tax=foreign_withholding_tax,
     )
 
 
