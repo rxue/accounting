@@ -16,9 +16,10 @@ _BALANCE_SHEET_TEMPLATE = files("financialstatements.pdfgeneration").joinpath("b
 
 
 def income_statement_pdf(income_statement: IncomeStatementInCent, output_path: str) -> None:
-    def fmt_rows(items):
+    def fmt_rows(items, negate=False):
+        sign = "-" if negate else ""
         return "\n".join(
-            f'    [{label}], [{value_in_cents / 100:,.2f} EUR],'
+            f'    [{label}], [{sign}{value_in_cents / 100:,.2f} EUR],'
             for label, value_in_cents in items
         )
 
@@ -31,7 +32,7 @@ def income_statement_pdf(income_statement: IncomeStatementInCent, output_path: s
         ("Salaries and Wages", income_statement.expenses.salaries_and_wages),
         ("Service Expense", income_statement.expenses.service_expense),
         ("Other Expense", income_statement.expenses.other_expense),
-    ])
+    ], negate=True)
 
     period = income_statement.period
     period_str = f"{period.start_date} – {period.end_date}"
@@ -50,8 +51,10 @@ def balance_sheet_pdf(balance_sheet_in_cent: BalanceSheetInCent, output_path: st
         fmt_row("Cash", balance_sheet_in_cent.cash),
         fmt_row("Financial Securities", balance_sheet_in_cent.financial_securities),
     ])
+    current_assets = f"{balance_sheet_in_cent.current_assets() / 100:,.2f} EUR"
     total_assets = f"{balance_sheet_in_cent.total_assets() / 100:,.2f} EUR"
     source = _BALANCE_SHEET_TEMPLATE.read_text(encoding="utf-8").format(
-        as_of_date=balance_sheet_in_cent.date, current_assets_rows=current_assets_rows, total_assets=total_assets
+        as_of_date=balance_sheet_in_cent.date, current_assets_rows=current_assets_rows,
+        current_assets=current_assets, total_assets=total_assets
     )
     typst.compile(source.encode(), output=output_path)

@@ -7,7 +7,7 @@
 
 #align(right)[Period: {period}]
 
-== Income
+== Gross Income
 
 #table(
   columns: (1fr, auto),

@@ -1,7 +1,7 @@
 #set page(paper: "a4")
 #set text(size: 12pt)
 
-*Company name: OutlierX Oy*
+*OutlierX Oy*
 
 = Balance Sheet
 
@@ -9,13 +9,13 @@
 
 == Assets
 
-=== Current Assets
-
 #table(
   columns: (1fr, auto),
   align: (left, right),
   stroke: none,
   {current_assets_rows}
+  table.hline(start: 1),
+  [*Current Assets*], [*{current_assets}*],
 )
 
 #table(
