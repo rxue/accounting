@@ -1,7 +1,7 @@
 #set page(paper: "a4")
 #set text(size: 12pt)
 
-*Company name: OutlierX Oy*
+*{company_name}*
 
 = Income Statement
 

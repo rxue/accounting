@@ -15,7 +15,7 @@ _INCOME_STATEMENT_TEMPLATE = files("financialstatements.pdfgeneration").joinpath
 _BALANCE_SHEET_TEMPLATE = files("financialstatements.pdfgeneration").joinpath("balance_sheet.typ")
 
 
-def income_statement_pdf(income_statement: IncomeStatementInCent, output_path: str) -> None:
+def income_statement_pdf(income_statement: IncomeStatementInCent, output_path: str, company_name: str = "") -> None:
     def fmt_rows(items, negate=False):
         sign = "-" if negate else ""
         return "\n".join(
@@ -38,12 +38,12 @@ def income_statement_pdf(income_statement: IncomeStatementInCent, output_path: s
     period_str = f"{period.start_date} – {period.end_date}"
     net_income = f"{income_statement.net_income() / 100:,.2f} EUR"
     source = _INCOME_STATEMENT_TEMPLATE.read_text(encoding="utf-8").format(
-        period=period_str, income_rows=income_rows, expense_rows=expense_rows, net_income=net_income
+        company_name=company_name, period=period_str, income_rows=income_rows, expense_rows=expense_rows, net_income=net_income
     )
     typst.compile(source.encode(), output=output_path)
 
 
-def balance_sheet_pdf(balance_sheet_in_cent: BalanceSheetInCent, output_path: str) -> None:
+def balance_sheet_pdf(balance_sheet_in_cent: BalanceSheetInCent, output_path: str, company_name: str = "") -> None:
     def fmt_row(label, value_in_cents):
         return f'    [{label}], [{value_in_cents / 100:,.2f} EUR],'
 
@@ -54,7 +54,7 @@ def balance_sheet_pdf(balance_sheet_in_cent: BalanceSheetInCent, output_path: st
     current_assets = f"{balance_sheet_in_cent.current_assets() / 100:,.2f} EUR"
     total_assets = f"{balance_sheet_in_cent.total_assets() / 100:,.2f} EUR"
     source = _BALANCE_SHEET_TEMPLATE.read_text(encoding="utf-8").format(
-        as_of_date=balance_sheet_in_cent.date, current_assets_rows=current_assets_rows,
+        company_name=company_name, as_of_date=balance_sheet_in_cent.date, current_assets_rows=current_assets_rows,
         current_assets=current_assets, total_assets=total_assets
     )
     typst.compile(source.encode(), output=output_path)

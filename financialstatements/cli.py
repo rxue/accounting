@@ -13,7 +13,9 @@ def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeSt
     def get_end_date(df: pd.DataFrame, end_date: datetime.date | None) -> datetime.date:
         if end_date is not None:
             return end_date
-        return pd.to_datetime(df["Kirjauspäivä"], format="%d.%m.%Y").dt.date.max()
+        latest = pd.to_datetime(df["Kirjauspäivä"], format="%d.%m.%Y").dt.date.max()
+        last_day = (datetime.date(latest.year, latest.month, 1) + datetime.timedelta(days=32)).replace(day=1) - datetime.timedelta(days=1)
+        return last_day
 
     end_date = get_end_date(df, end_date)
     filtered_df = transactions_before(df, end_date)
@@ -40,13 +42,16 @@ def main():
 
     input_dir = "--input-dir"
     end_date = "--end-date"
+    company_name = "--company-name"
     dry_run_parser = subparsers.add_parser("dry-run", help="Print financial statements to stdout")
     dry_run_parser.add_argument(input_dir, required=True, help="Directory containing CSV files")
     dry_run_parser.add_argument(end_date, required=False, help="end date")
+    dry_run_parser.add_argument(company_name, required=False, default="", help="Company name")
 
     pdf_parser = subparsers.add_parser("pdf", help="Generate financial statements as PDF")
     pdf_parser.add_argument(input_dir, required=True, help="Directory containing CSV files")
     pdf_parser.add_argument(end_date, required=False, help="end date")
+    pdf_parser.add_argument(company_name, required=False, default="", help="Company name")
 
     args = parser.parse_args()
     df = read_csvs_to_dataframe(args.input_dir)
@@ -58,6 +63,6 @@ def main():
         print("reconciled" if reconcile(find_cash_infusion(df), income_statement, balance_sheet) else "reconciliation failed")
     elif args.command == "pdf":
         from financialstatements.pdfgeneration.pdf_generator import income_statement_pdf, balance_sheet_pdf
-        income_statement_pdf(income_statement, "income_statement.pdf")
-        balance_sheet_pdf(balance_sheet, "balance_sheet.pdf")
+        income_statement_pdf(income_statement, "income_statement.pdf", args.company_name)
+        balance_sheet_pdf(balance_sheet, "balance_sheet.pdf", args.company_name)
 

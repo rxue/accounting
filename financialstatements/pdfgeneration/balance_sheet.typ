@@ -1,7 +1,7 @@
 #set page(paper: "a4")
 #set text(size: 12pt)
 
-*OutlierX Oy*
+*{company_name}*
 
 = Balance Sheet
 
