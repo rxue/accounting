@@ -2,6 +2,7 @@
 """Filter functions for transaction DataFrames. All functions' return type is based on pf.DataFrame"""
 
 import argparse
+import datetime
 import re
 
 import pandas as pd
@@ -53,6 +54,11 @@ def find_all_stock_tradings_by_symbol(df: pd.DataFrame) -> dict[str, pd.DataFram
 def match_trading(viesti: str) -> re.Match[str] | None:
     pattern = r"^([OM]):([\w.]+)(?:\s+\w+)?\s*/(\d+)"
     return re.match(pattern, viesti)
+
+
+def transactions_before(df: pd.DataFrame, date: datetime.date) -> pd.DataFrame:
+    dates = pd.to_datetime(df["Kirjauspäivä"], format="%d.%m.%Y").dt.date
+    return df[dates <= date]
 
 
 def find_cash_infusion(df: pd.DataFrame) -> pd.DataFrame:
