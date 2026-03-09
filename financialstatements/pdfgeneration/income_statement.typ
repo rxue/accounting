@@ -16,15 +16,12 @@
   {income_rows}
 )
 
-== Expenses
-
 #table(
   columns: (1fr, auto),
   align: (left, right),
   stroke: none,
+  table.header([*Expenses*], []),
   {expense_rows}
-  table.hline(start: 1),
-  [*Total Expenses*], [*-{total_expenses}*],
 )
 
 #table(

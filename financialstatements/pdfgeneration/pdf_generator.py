@@ -37,10 +37,8 @@ def income_statement_pdf(income_statement: IncomeStatementInCent, output_path: s
     period = income_statement.period
     period_str = f"{period.start_date} – {period.end_date}"
     net_income = f"{income_statement.net_income() / 100:,.2f} EUR"
-    total_expenses = f"{income_statement.expenses.total() / 100:,.2f} EUR"
     source = _INCOME_STATEMENT_TEMPLATE.read_text(encoding="utf-8").format(
-        company_name=company_name, period=period_str, income_rows=income_rows, expense_rows=expense_rows,
-        total_expenses=total_expenses, net_income=net_income
+        company_name=company_name, period=period_str, income_rows=income_rows, expense_rows=expense_rows, net_income=net_income
     )
     typst.compile(source.encode(), output=output_path)
 
