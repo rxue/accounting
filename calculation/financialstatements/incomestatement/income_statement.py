@@ -3,9 +3,8 @@ from dataclasses import dataclass
 import pandas as pd
 
 from calculation.financialstatements.incomestatement.income_item import DividendIncomeInCent
+from calculation.financialstatements.transaction_filters import find_service_charges
 from calculation.util import Period
-from calculation.financialstatements.calc import calculate_profit_by_symbol
-from calculation.financialstatements.transaction_filters import find_dividend_payments, find_all_stock_tradings_by_symbol, find_service_charges, find_expenses
 
 
 @dataclass
@@ -60,18 +59,3 @@ def generate_income_statement(period: Period, gross_trading_income: int, dividen
             foreign_withholding_tax=foreign_withholding_tax,
         ),
     )
-
-
-def main():
-    import argparse
-    from calculation.financialstatements.csv_to_dataframe import read_csvs_to_dataframe
-
-    parser = argparse.ArgumentParser(description="Generate income statement from CSV files")
-    parser.add_argument("directory", help="Directory containing CSV files")
-    args = parser.parse_args()
-
-    df = read_csvs_to_dataframe(args.directory)
-    gross_trading_income = sum(r.profit_in_cent for r in calculate_profit_by_symbol(find_all_stock_tradings_by_symbol(df)))
-    dividend_income = DividendIncomeInCent(transactions=find_dividend_payments(df))
-    from calculation.util import get_period
-    print(generate_income_statement(get_period(df), gross_trading_income, dividend_income, find_expenses(df)))

@@ -7,7 +7,7 @@ from importlib.resources import files
 import typst
 
 from calculation.financialstatements.balance_sheet import BalanceSheetInCent
-from calculation.financialstatements.csv_to_dataframe import read_csvs_to_dataframe
+from calculation.csv_to_dataframe import read_csvs_to_dataframe
 from calculation.cli import generate
 from calculation.financialstatements.incomestatement.income_statement import IncomeStatementInCent
 

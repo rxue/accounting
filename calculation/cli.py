@@ -5,7 +5,8 @@ import pandas as pd
 from calculation.financialstatements.balance_sheet import BalanceSheetInCent
 from calculation.financialstatements.incomestatement.income_item import DividendIncomeInCent
 from calculation.financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
-from calculation.financialstatements.calc import calculate_profit_by_symbol, reconcile
+from calculation.financialstatements.reconciliation import reconcile
+from calculation.profit_calculation import calculate_profit_by_symbol
 from calculation.util import Period, get_period
 from calculation.financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses, find_cash_infusion, transactions_before
 def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeStatementInCent, BalanceSheetInCent]:
@@ -32,7 +33,7 @@ def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeSt
     return income_statement, balance_sheet
 def main():
     import argparse
-    from calculation.financialstatements.csv_to_dataframe import read_csvs_to_dataframe
+    from calculation.csv_to_dataframe import read_csvs_to_dataframe
 
     parser = argparse.ArgumentParser(description="Generate financial statements from CSV files")
     subparsers = parser.add_subparsers(dest="command", required=True)
