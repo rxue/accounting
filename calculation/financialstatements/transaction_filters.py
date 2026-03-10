@@ -7,9 +7,6 @@ import re
 
 import pandas as pd
 
-from calculation.csv_to_dataframe import read_csvs_to_dataframe
-
-
 def find_dividend_payments(df: pd.DataFrame) -> pd.DataFrame:
     """Find rows where Laji is 'Arvopaperit' (stock tradings).
 
@@ -81,6 +78,7 @@ def find_expenses(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
+    from calculation.csv_to_dataframe import read_csvs_to_dataframe
     parser = argparse.ArgumentParser(
         description="Filter transactions from CSV files"
     )

@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 """Generate tax report as PDF using Typst."""
 
-import argparse
 from importlib.resources import files
 
 import typst
 
 from calculation.financialstatements.balance_sheet import BalanceSheetInCent
-from calculation.csv_to_dataframe import read_csvs_to_dataframe
-from calculation.cli import generate
 from calculation.financialstatements.incomestatement.income_statement import IncomeStatementInCent
 
 _INCOME_STATEMENT_TEMPLATE = files("calculation.financialstatements.pdfgeneration").joinpath("income_statement.typ")
