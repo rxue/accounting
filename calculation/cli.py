@@ -5,10 +5,9 @@ import pandas as pd
 from calculation.financialstatements.balance_sheet import BalanceSheetInCent
 from calculation.financialstatements.incomestatement.income_item import DividendIncomeInCent
 from calculation.financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
-from calculation.financialstatements.calc import get_period, calculate_profit_by_symbol, reconcile
+from calculation.financialstatements.calc import calculate_profit_by_symbol, reconcile
+from calculation.util import Period, get_period
 from calculation.financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses, find_cash_infusion, transactions_before
-
-
 def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeStatementInCent, BalanceSheetInCent]:
     def get_end_date(df: pd.DataFrame, end_date: datetime.date | None) -> datetime.date:
         if end_date is not None:
@@ -31,8 +30,6 @@ def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeSt
     cash = round(filtered_df["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100)
     balance_sheet = BalanceSheetInCent(date=end_date, cash=cash, financial_securities=financial_securities)
     return income_statement, balance_sheet
-
-
 def main():
     import argparse
     from calculation.financialstatements.csv_to_dataframe import read_csvs_to_dataframe

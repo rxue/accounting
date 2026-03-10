@@ -1,3 +1,3 @@
-from calculation.financialstatements.cli import main
+from calculation.cli import main
 
 main()
