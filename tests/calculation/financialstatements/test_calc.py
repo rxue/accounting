@@ -1,6 +1,6 @@
 import pandas as pd
 
-from financialstatements.calc import Period, get_period
+from calculation.financialstatements.calc import Period, get_period
 
 
 def test_get_period():

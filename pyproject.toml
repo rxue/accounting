@@ -12,10 +12,10 @@ dependencies = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["financialstatements*", "ai_tool*", "calculation*"]
+include = ["ai_tool*", "calculation*"]
 
 [tool.setuptools.package-data]
-"financialstatements.pdfgeneration" = ["*.typ"]
+"calculation.financialstatements.pdfgeneration" = ["*.typ"]
 
 [project.optional-dependencies]
 test = [

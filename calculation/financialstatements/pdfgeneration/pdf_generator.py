@@ -6,13 +6,13 @@ from importlib.resources import files
 
 import typst
 
-from financialstatements.balance_sheet import BalanceSheetInCent
-from financialstatements.csv_to_dataframe import read_csvs_to_dataframe
-from financialstatements.cli import generate
-from financialstatements.incomestatement.income_statement import IncomeStatementInCent
+from calculation.financialstatements.balance_sheet import BalanceSheetInCent
+from calculation.financialstatements.csv_to_dataframe import read_csvs_to_dataframe
+from calculation.financialstatements.cli import generate
+from calculation.financialstatements.incomestatement.income_statement import IncomeStatementInCent
 
-_INCOME_STATEMENT_TEMPLATE = files("financialstatements.pdfgeneration").joinpath("income_statement.typ")
-_BALANCE_SHEET_TEMPLATE = files("financialstatements.pdfgeneration").joinpath("balance_sheet.typ")
+_INCOME_STATEMENT_TEMPLATE = files("calculation.financialstatements.pdfgeneration").joinpath("income_statement.typ")
+_BALANCE_SHEET_TEMPLATE = files("calculation.financialstatements.pdfgeneration").joinpath("balance_sheet.typ")
 
 
 def income_statement_pdf(income_statement: IncomeStatementInCent, output_path: str, company_name: str = "") -> None:

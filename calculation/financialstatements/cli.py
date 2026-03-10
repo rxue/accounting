@@ -2,11 +2,11 @@ import datetime
 
 import pandas as pd
 
-from financialstatements.balance_sheet import BalanceSheetInCent
-from financialstatements.incomestatement.income_item import DividendIncomeInCent
-from financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
-from financialstatements.calc import get_period, calculate_profit_by_symbol, reconcile
-from financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses, find_cash_infusion, transactions_before
+from calculation.financialstatements.balance_sheet import BalanceSheetInCent
+from calculation.financialstatements.incomestatement.income_item import DividendIncomeInCent
+from calculation.financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
+from calculation.financialstatements.calc import get_period, calculate_profit_by_symbol, reconcile
+from calculation.financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses, find_cash_infusion, transactions_before
 
 
 def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeStatementInCent, BalanceSheetInCent]:
@@ -35,7 +35,7 @@ def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeSt
 
 def main():
     import argparse
-    from financialstatements.csv_to_dataframe import read_csvs_to_dataframe
+    from calculation.financialstatements.csv_to_dataframe import read_csvs_to_dataframe
 
     parser = argparse.ArgumentParser(description="Generate financial statements from CSV files")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -64,7 +64,7 @@ def main():
         print(balance_sheet)
         print("reconciled" if reconcile(find_cash_infusion(df), income_statement, balance_sheet) else "reconciliation failed")
     elif args.command == "pdf":
-        from financialstatements.pdfgeneration.pdf_generator import income_statement_pdf, balance_sheet_pdf
+        from calculation.financialstatements.pdfgeneration.pdf_generator import income_statement_pdf, balance_sheet_pdf
         income_statement_pdf(income_statement, "income_statement.pdf", args.company_name)
         balance_sheet_pdf(balance_sheet, "balance_sheet.pdf", args.company_name)
 

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from financialstatements.incomestatement.income_item import DividendIncomeInCent
+from calculation.financialstatements.incomestatement.income_item import DividendIncomeInCent
 
 TRANSACTION_DETAIL_USD = (
     " OP Säilytys Oy                     SIRIUSXM HOLDINGS                  "
