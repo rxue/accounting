@@ -8,7 +8,7 @@ This is the script `extract_zips_from_directory.sh`
 
 ## Demo
 
-[![Demo](https://img.youtube.com/vi/NzRyE-s3JDY/0.jpg)](https://www.youtube.com/watch?v=NzRyE-s3JDY)
+[![Demo](https://img.youtube.com/vi/NzRyE-s3JDY/0.jpg)](https://www.youtube.com/watch?v=NzRyE-s3JDY) (outdated, updated soon)
 
 # Pre-requisite
 1. `cd` to this project directory
