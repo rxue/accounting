@@ -6,6 +6,8 @@ import requests
 
 
 def fetch_fx_rate_to_euro(base_currency: str, date: datetime) -> float:
+    if base_currency == 'EUR':
+        return 1
     date_str = date.strftime("%Y-%m-%d")
     url = f"https://data-api.ecb.europa.eu/service/data/EXR/D.{base_currency}.EUR.SP00.A"
     response = requests.get(url, params={

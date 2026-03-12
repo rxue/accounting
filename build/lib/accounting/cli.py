@@ -2,13 +2,13 @@ import datetime
 
 import pandas as pd
 
-from investment.accounting.financialstatements.balance_sheet import BalanceSheetInCent
-from investment.accounting.financialstatements.incomestatement.income_item import DividendIncomeInCent
-from investment.accounting.financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
-from investment.accounting.financialstatements.reconciliation import reconcile
-from investment.accounting.profit_calculation import calculate_profit_by_symbol
-from investment.accounting.util import get_period
-from investment.accounting.financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses, find_cash_infusion, transactions_before
+from accounting.financialstatements.balance_sheet import BalanceSheetInCent
+from accounting.financialstatements.incomestatement.income_item import DividendIncomeInCent
+from accounting.financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
+from accounting.financialstatements.reconciliation import reconcile
+from accounting.profit_calculation import calculate_profit_by_symbol
+from accounting.util import get_period
+from accounting.financialstatements.transaction_filters import find_all_stock_tradings_by_symbol, find_dividend_payments, find_expenses, find_cash_infusion, transactions_before
 
 
 def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeStatementInCent, BalanceSheetInCent]:
@@ -35,7 +35,7 @@ def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeSt
     return income_statement, balance_sheet
 def main():
     import argparse
-    from investment.accounting.csv_to_dataframe import read_csvs_to_dataframe
+    from accounting.csv_to_dataframe import read_csvs_to_dataframe
 
     parser = argparse.ArgumentParser(description="Generate financial statements from CSV files")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -64,7 +64,7 @@ def main():
         print(balance_sheet)
         print("reconciled" if reconcile(find_cash_infusion(df), income_statement, balance_sheet) else "reconciliation failed")
     elif args.command == "pdf":
-        from investment.accounting.financialstatements.pdfgeneration.pdf_generator import income_statement_pdf, balance_sheet_pdf
+        from accounting.financialstatements.pdfgeneration.pdf_generator import income_statement_pdf, balance_sheet_pdf
         income_statement_pdf(income_statement, "income_statement.pdf", args.company_name)
         balance_sheet_pdf(balance_sheet, "balance_sheet.pdf", args.company_name)
 

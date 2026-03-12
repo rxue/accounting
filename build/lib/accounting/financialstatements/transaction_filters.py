@@ -78,7 +78,7 @@ def find_expenses(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
-    from investment.accounting.csv_to_dataframe import read_csvs_to_dataframe
+    from accounting.csv_to_dataframe import read_csvs_to_dataframe
     parser = argparse.ArgumentParser(
         description="Filter transactions from CSV files"
     )

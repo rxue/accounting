@@ -1,1 +1,1 @@
-from investment.accounting.cli import main
+from investment.accounting.composite_generator import main

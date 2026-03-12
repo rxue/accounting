@@ -1,6 +1,14 @@
+from dataclasses import dataclass, field
+
 import pandas as pd
 
-from investment.accounting.models import Lot, ProfitCalculationResult
+
+@dataclass
+class Lot:
+    date: str
+    type: str
+    share_amount: int
+    money_amount_in_cent: int
 
 
 def calculate_trading_profit_in_fifo(transactions: list[Lot]) -> tuple[int, list[Lot]]:
@@ -29,9 +37,15 @@ def calculate_trading_profit_in_fifo(transactions: list[Lot]) -> tuple[int, list
     return total_profit_cents, remaining_lots
 
 
+@dataclass
+class ProfitCalculationResult:
+    symbol: str
+    profit_in_cent: int
+    remaining_lots: list[Lot]
+
 
 def transfer_transactions_to_lots(df: pd.DataFrame) -> list[Lot]:
-    from investment.accounting.util import match_trading
+    from accounting.financialstatements.transaction_filters import match_trading
     transactions = []
     for _, row in df.iterrows():
         viesti = row["Viesti"].strip()

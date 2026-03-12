@@ -1,5 +1,4 @@
 import calendar
-import re
 from dataclasses import dataclass
 
 import pandas as pd
@@ -9,11 +8,6 @@ import pandas as pd
 class Period:
     start_date: str
     end_date: str
-
-
-def match_trading(viesti: str) -> re.Match[str] | None:
-    pattern = r"^([OM]):([\w.]+)(?:\s+\w+)?\s*/(\d+)"
-    return re.match(pattern, viesti)
 
 
 def get_period(df: pd.DataFrame) -> Period:

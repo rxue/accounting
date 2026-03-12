@@ -1,13 +1,14 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 
 import pandas as pd
 
-from investment.accounting.financialstatements.incomestatement.dividend_income import DividendIncomeInCent
-from investment.accounting.transaction_filters import find_service_charges
-from investment.accounting.util import Period
+from accounting.financialstatements.incomestatement.income_item import DividendIncomeInCent
+from accounting.financialstatements.transaction_filters import find_service_charges
+from accounting.util import Period
 
 
-class ExpensesInCent(NamedTuple):
+@dataclass
+class ExpensesInCent:
     service_expense: int
     other_expense: int
     foreign_withholding_tax: int
@@ -22,7 +23,8 @@ class ExpensesInCent(NamedTuple):
         )
 
 
-class IncomeStatementInCent(NamedTuple):
+@dataclass
+class IncomeStatementInCent:
     period: Period
     gross_dividend_income: int
     trading_income: int

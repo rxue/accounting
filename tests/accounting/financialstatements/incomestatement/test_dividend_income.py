@@ -1,6 +1,6 @@
 import pandas as pd
 
-from investment.accounting.financialstatements.incomestatement.income_item import DividendIncomeInCent
+from investment.accounting.financialstatements.incomestatement.dividend_income import DividendIncomeInCent
 
 TRANSACTION_DETAIL_USD = (
     " OP Säilytys Oy                     SIRIUSXM HOLDINGS                  "
@@ -53,9 +53,9 @@ SIRIUSXM_USD_ROW = pd.DataFrame([{
 
 
 def test_withholding_tax():
-    assert DividendIncomeInCent(transactions=SIRIUSXM_USD_ROW).withholding_tax() == 307
+    assert DividendIncomeInCent(dividend_payment_transactions_df=SIRIUSXM_USD_ROW).withholding_tax() == 307
 
 
 
 def test_gross_value():
-    assert DividendIncomeInCent(transactions=SIRIUSXM_USD_ROW).gross_value() == 2046
+    assert DividendIncomeInCent(dividend_payment_transactions_df=SIRIUSXM_USD_ROW).gross_value() == 2046
