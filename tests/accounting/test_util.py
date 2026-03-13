@@ -13,7 +13,7 @@ def test_match_trading_buy_with_country_code():
     match = match_trading("O:PFE US /100")
     assert match is not None
     assert match.group(1) == "O"
-    assert match.group(2) == "PFE"
+    assert match.group(2) == "PFE US"
     assert match.group(3) == "100"
 
 

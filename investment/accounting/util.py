@@ -12,7 +12,7 @@ class Period:
 
 
 def match_trading(viesti: str) -> re.Match[str] | None:
-    pattern = r"^([OM]):([\w.]+)(?:\s+\w+)?\s*/(\d+)"
+    pattern = r"^([OM]):([\w.]+(?:\s+[\w.]+)*)\s*/(\d+)"
     return re.match(pattern, viesti)
 
 

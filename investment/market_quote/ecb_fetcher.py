@@ -1,11 +1,11 @@
 import csv
 import io
-from datetime import datetime
+from datetime import date
 
 import requests
 
 
-def fetch_fx_rate_to_euro(base_currency: str, date: datetime) -> float:
+def fetch_fx_rate_to_euro(base_currency: str, date: date) -> float:
     if base_currency == 'EUR':
         return 1
     date_str = date.strftime("%Y-%m-%d")

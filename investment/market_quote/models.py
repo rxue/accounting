@@ -9,6 +9,7 @@ class Company(NamedTuple):
     currency: str
 
 class Price(NamedTuple):
-    company: Company
     price: float
     fx_rate: float | None = None
+    def price_in_eur(self)->float:
+        return self.price/self.fx_rate

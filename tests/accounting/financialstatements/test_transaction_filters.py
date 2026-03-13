@@ -38,8 +38,8 @@ def test_find_all_stock_tradings_by_symbol():
         "Määrä EUROA": ["-100,00", "50,00", "-200,00", "1000,00"],
     })
     result = find_all_stock_tradings_by_symbol(df)
-    assert set(result.keys()) == {"AAPL", "MSFT"}
-    assert len(result["AAPL"]) == 2
+    assert set(result.keys()) == {"AAPL US", "MSFT"}
+    assert len(result["AAPL US"]) == 2
     assert len(result["MSFT"]) == 1
 
 

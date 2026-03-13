@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from zoneinfo import ZoneInfo
 
 from investment.market_quote.models import Company
 
-def fetch_closing_price(company: Company, date: datetime) -> float:
-    date_at_0 = date.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=company.time_zone)
+def fetch_closing_price(company: Company, date: date) -> float:
+    date_at_0 = datetime(date.year, date.month, date.day, tzinfo=company.time_zone)
     next_day_at_0 = date_at_0 + timedelta(days=1)
 
     url = f"https://query2.finance.yahoo.com/v8/finance/chart/{company.yahoo_symbol}"
