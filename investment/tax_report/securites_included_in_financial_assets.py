@@ -8,6 +8,7 @@ from investment.market_quote.repository import find_closing_price_by_symbol, fin
 class SecurityHoldingAsAsset(NamedTuple):
     company_name:str
     number_of_shares:int
+    cost:float
     closing_price_per_unit:float
     def comparison_value_per_unit(self) -> float:
         return round(self.closing_price_per_unit * 0.7, 2)
@@ -17,6 +18,7 @@ class SecurityHoldingAsAsset(NamedTuple):
     def __str__(self) -> str:
         return (f"SecurityHoldingAsAsset(company_name={self.company_name!r}, "
                 f"number_of_shares={self.number_of_shares!r}, "
+                f"cost_for_purpose_on_income_tax={self.cost!r}, "
                 f"closing_price_per_unit={self.closing_price_per_unit!r}, "
                 f"comparison_value_per_unit={self.comparison_value_per_unit()}, "
                 f"total_comparison_value={self.total_comparison_value()})")
@@ -28,6 +30,7 @@ def _to_SecurityHoldingAsAsset(holding: Holding, date: date) -> SecurityHoldingA
     return SecurityHoldingAsAsset(
         company_name=company.short_name,
         number_of_shares=holding.share_amount,
+        cost=holding.book_value,
         closing_price_per_unit=price.price_in_eur()
     )
 
