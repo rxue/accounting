@@ -21,5 +21,6 @@ def main():
 
     print(income_statement)
     print(balance_sheet)
+    print(f"loss for accounting period is {income_statement.loss()}")
     for security in securities:
         print(security)

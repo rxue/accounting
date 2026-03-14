@@ -3,8 +3,8 @@ import datetime
 import pandas as pd
 
 from investment.accounting.financialstatements.balance_sheet import BalanceSheetInCent
-from investment.accounting.financialstatements.incomestatement.dividend_income import DividendIncomeInCent
 from investment.accounting.financialstatements.incomestatement.income_statement import IncomeStatementInCent, generate_income_statement
+from investment.accounting.financialstatements.incomestatement.models import DividendIncome
 from investment.accounting.financialstatements.reconciliation import reconcile
 from investment.accounting.models import Holding
 from investment.accounting.profit_calculation import calculate_profit_by_symbol
@@ -26,8 +26,7 @@ def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeSt
     gross_trading_income = sum(r.profit_in_cent for r in profit_results)
     income_statement = generate_income_statement(get_period(filtered_df),
                                                  gross_trading_income,
-                                                 DividendIncomeInCent(
-                                                     dividend_payment_transactions_df=find_dividend_payments(filtered_df)),
+                                                 DividendIncome.from_transactions(find_dividend_payments(filtered_df)),
                                                  find_expenses(filtered_df))
     financial_securities = sum(
         lot.money_amount_in_cent for r in profit_results for lot in r.remaining_lots
@@ -35,13 +34,20 @@ def generate(df: pd.DataFrame, end_date: datetime.date | None) -> tuple[IncomeSt
     cash = round(filtered_df["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100)
     balance_sheet = BalanceSheetInCent(date=end_date, cash=cash, financial_securities=financial_securities)
     return income_statement, balance_sheet, [r.get_holding() for r in profit_results]
+
 def main():
     import argparse
+    import sys
     from investment.accounting.csv_to_dataframe import read_csvs_to_dataframe
+
+    generate_pdf = len(sys.argv) > 1 and sys.argv[1] == "financial-statements-pdf"
+    if generate_pdf:
+        sys.argv.pop(1)
 
     parser = argparse.ArgumentParser(description="Generate financial statements from CSV files")
     parser.add_argument("--input-dir", required=True, help="Directory containing CSV files")
     parser.add_argument("--end-date", required=False, help="end date")
+    parser.add_argument("--company", required=False, help="Name of the company")
 
     args = parser.parse_args()
     df = read_csvs_to_dataframe(args.input_dir)
@@ -54,4 +60,9 @@ def main():
     print("reconciled" if reconcile(find_cash_infusion(df), income_statement, balance_sheet) else "reconciliation failed")
     for holding in holdings:
         print(holding)
+    if generate_pdf:
+        from investment.accounting.financialstatements.pdfgeneration.pdf_generator import income_statement_pdf, balance_sheet_pdf
+        company_name = args.company
+        income_statement_pdf(income_statement, "income_statement.pdf", company_name)
+        balance_sheet_pdf(balance_sheet, "balance_sheet.pdf", company_name)
 

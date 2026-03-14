@@ -2,7 +2,7 @@ from typing import NamedTuple
 
 import pandas as pd
 
-from investment.accounting.financialstatements.incomestatement.dividend_income import DividendIncomeInCent
+from investment.accounting.financialstatements.incomestatement.models import DividendIncome
 from investment.accounting.transaction_filters import find_service_charges
 from investment.accounting.util import Period
 
@@ -40,13 +40,14 @@ class IncomeStatementInCent(NamedTuple):
             - self.expenses.other_expense
             - self.expenses.salaries_and_wages
         )
+    def loss(self):
+        return self.gross_dividend_income + self.trading_income - self.expenses.total()
 
-
-def generate_income_statement(period: Period, gross_trading_income: int, dividend_income: DividendIncomeInCent, expenses_df: pd.DataFrame) -> IncomeStatementInCent:
+def generate_income_statement(period: Period, gross_trading_income: int, dividend_income: DividendIncome, expenses_df: pd.DataFrame) -> IncomeStatementInCent:
     all_expense_in_cents = abs(round(expenses_df["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100))
     service_expense_cents = abs(round(find_service_charges(expenses_df)["Määrä EUROA"].str.replace(",", ".").astype(float).sum() * 100))
-    gross_dividend_income = dividend_income.gross_value()
-    foreign_withholding_tax = dividend_income.withholding_tax()
+    gross_dividend_income = dividend_income.gross_value_in_cent()
+    foreign_withholding_tax = dividend_income.withholding_tax_in_cent()
     return IncomeStatementInCent(
         period=period,
         gross_dividend_income=gross_dividend_income,
