@@ -24,15 +24,19 @@ class SecurityHoldingAsAsset(NamedTuple):
                 f"total_comparison_value={self.total_comparison_value()})")
     
 
-def _to_SecurityHoldingAsAsset(holding: Holding, date: date) -> SecurityHoldingAsAsset:
+def to_SecurityHoldingAsAsset(holding: Holding, date: date) -> SecurityHoldingAsAsset:
+    from datetime import timedelta
+
+    def get_work_date(d: date) -> date:
+        while d.weekday() > 4:
+            d -= timedelta(days=1)
+        return d
+
     company = find_company_by_op_symbol(holding.symbol)
-    price = find_closing_price_by_symbol(company, date)
+    price = find_closing_price_by_symbol(company, get_work_date(date))
     return SecurityHoldingAsAsset(
         company_name=company.short_name,
         number_of_shares=holding.share_amount,
         cost=holding.book_value,
         closing_price_per_unit=price.price_in_eur()
     )
-
-def to_SecurityHoldingsAsAsset(holdings: list[Holding], date: date) -> list[SecurityHoldingAsAsset]:
-    return [_to_SecurityHoldingAsAsset(holding, date) for holding in holdings]

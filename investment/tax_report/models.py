@@ -31,10 +31,10 @@ class TaxPaidAbroadEntryDTO(NamedTuple):
         return "Final tax"
     @classmethod
     def from_dividend_payment(cls, payment: DividendPayment, country: Country) -> "TaxPaidAbroadEntryDTO":
-        def _to_euro_value(val:float) -> str:
-            return str(val) + " EUR"
+        def _to_euro_value(val: float) -> str:
+            return f"{val:.2f} EUR"
         return cls(
-            country_of_source=payment.company.country_code,
+            country_of_source=country.name,
             payment_date_of_foreign_tax=payment.value_date.strftime("%d.%m.%Y"),
             name_of_tax=country.income_tax_name,
             withholding_rate_according_to_tax_treaty=str(country.tax_withholding_rate) + "%",
