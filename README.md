@@ -1,8 +1,5 @@
 # What is this project about
-This project has the following functionalities at the moment:
-1. extract the zips of bank statement csv files from OP bank to a target directory by executing script `extract_zips_from_directory.sh`
-
-2. generate financial statements and tax report on base of the given directory, where the bank statements reside
+This project generates *financial statements* and forms needed in *tax report* on base of the bank statement csv files, which are stored in a given directory
 
 ## Demo
 
