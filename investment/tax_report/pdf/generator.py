@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import PyPDF2
+import pypdf
 
 from investment.tax_report.pdf.models import FormGenConfig
 
@@ -134,7 +134,7 @@ def to_form70_pdf_input(dividend_payments:list[DividendPayment], compulsory_fiel
         counter = counter + 1
     return pdf_input_batch
 
-def _set_checkbox_option(writer: PyPDF2.PdfWriter, page_idx: int, field_name: str, option_value: int) -> None:
+def _set_checkbox_option(writer: pypdf.PdfWriter, page_idx: int, field_name: str, option_value: int) -> None:
     page = writer.pages[page_idx]
     if '/Annots' not in page:
         return
@@ -149,16 +149,16 @@ def _set_checkbox_option(writer: PyPDF2.PdfWriter, page_idx: int, field_name: st
     ap_n = kid.get('/AP', {}).get('/N', {})
     on_key = next((k for k in ap_n if k != '/Off'), None)
     if on_key:
-        kid[PyPDF2.generic.NameObject('/AS')] = PyPDF2.generic.NameObject(on_key)
-        kid[PyPDF2.generic.NameObject('/V')] = PyPDF2.generic.NameObject(on_key)
+        kid[pypdf.generic.NameObject('/AS')] = pypdf.generic.NameObject(on_key)
+        kid[pypdf.generic.NameObject('/V')] = pypdf.generic.NameObject(on_key)
 
 def fill_form_pdf(input:dict[str,str], form_pdf_path: str, output_path: str) -> None:
     path = Path(form_pdf_path)
-    reader = PyPDF2.PdfReader(open(path, "rb"))
+    reader = pypdf.PdfReader(open(path, "rb"))
     fields = reader.get_fields() or {}
     btn_fields = {k: v for k, v in input.items() if fields.get(k, {}).get('/FT') == '/Btn'}
     text_fields = {k: v for k, v in input.items() if k not in btn_fields}
-    writer = PyPDF2.PdfWriter()
+    writer = pypdf.PdfWriter()
     writer.append(reader)
     writer.update_page_form_field_values(writer.pages[0], text_fields)
     for field_name, option_value in btn_fields.items():
@@ -178,19 +178,12 @@ def generate_pdf_forms(pdf_form_gen_config:FormGenConfig, input:list[T], combine
         idx = idx + 1
 
     def combine_pdfs(input_file_paths:str, combined_path:str):
-        writer = PyPDF2.PdfWriter()
+        writer = pypdf.PdfWriter()
         for path in input_file_paths:
-            writer.append(PyPDF2.PdfReader(open(path, "rb")))
-        src_root = PyPDF2.PdfReader(open(input_file_paths[0], "rb")).trailer['/Root'].get_object()
-        src_acroform = src_root.get('/AcroForm')
-        new_af = PyPDF2.generic.DictionaryObject()
-        if src_acroform:
-            for key, val in src_acroform.get_object().items():
-                if key != '/Fields':
-                    new_af[key] = val
-        new_af[PyPDF2.generic.NameObject('/NeedAppearances')] = PyPDF2.generic.BooleanObject(True)
-        new_af[PyPDF2.generic.NameObject('/Fields')] = PyPDF2.generic.ArrayObject()
-        writer._root_object[PyPDF2.generic.NameObject('/AcroForm')] = new_af
+            writer.append(path)
+        writer._root_object['/AcroForm'].get_object()[
+            pypdf.generic.NameObject('/NeedAppearances')
+        ] = pypdf.generic.BooleanObject(True)
         with open(combined_path, "wb") as f:
             writer.write(f)
 

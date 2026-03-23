@@ -10,7 +10,7 @@ dependencies = [
     "pandas",
     "typst",
     "requests",
-    "PyPDF2",
+    "pypdf",
     "PyYAML"
 ]
 

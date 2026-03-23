@@ -13,10 +13,7 @@ This project generates *financial statements* and forms needed in *tax report* o
 1. initialize venv with command `python3 -m venv .venv`
 2. activate venv with command `source .venv/bin/activate`
 3. install project with command `pip install e .`
-4. execution
-* dry-run with command: `python calculation pdf --input-dir <input-directory> --company-name <company-name>`
-
-example: `python accounting pdf --input-dir ~/Documents/outlierx/tiliote/extracted --company-name "xxx"`
+4. execute command: `python -m investment.tax_report pdf config.yml`, where `config.yml` is the configuration file for running the program
 
 ## How to run tests
 1. install `pip install -e ".[test]"`
