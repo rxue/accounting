@@ -5,6 +5,8 @@ software: "investment-softa"
 service_provider_id: "spid"
 account_period: "2025-03-01:2026-02-28"
 input_dir: "/home/rui/Documents/company_data/tiliote/extracted"
+empty_form8a_pdf_path: "data/form8a_26.pdf"
+empty_form70_pdf_path: "data/form70_26.pdf"
 output_dir: "output"
 
 

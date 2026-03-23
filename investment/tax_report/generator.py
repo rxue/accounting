@@ -1,26 +1,10 @@
 import argparse
 from pathlib import Path
-from datetime import date
-
-import pandas as pd
-
 from investment import accounting
 from investment.accounting.csv_to_dataframe import read_csvs_to_dataframe
-from investment.accounting.financialstatements.incomestatement.models import DividendPayment
-import investment.tax_report.data_file.generator as formgen
-from investment.tax_report.models import Country, TaxPaidAbroadEntryDTO, ConfigData
-from investment.tax_report.pdf.generator import fill_form8a_pdf
-
-def generate_TaxPaidAbroadEntryDTOs(dividend_payments:list[DividendPayment]) -> list[TaxPaidAbroadEntryDTO]:
-    def _load_countries(path: str) -> list[Country]:
-        df = pd.read_csv(path, keep_default_na=False)
-        return [Country(isin_code=row["isin_code"], name=row["country_name"], income_tax_name=row["income_tax_name"])
-                for _, row in df.iterrows()]
-
-    countries = _load_countries("data/country.csv")
-    def get_country_by_isin_code(payment: DividendPayment) -> Country:
-        return next(c for c in countries if c.isin_code == payment.get_country_code())
-    return [TaxPaidAbroadEntryDTO.to_TaxPaidAbroadEntryDTO(d, get_country_by_isin_code(d)) for d in dividend_payments]
+from investment.tax_report.models import Country, ConfigData
+from investment.accounting.financialstatements.pdf.generator import income_statement_pdf, balance_sheet_pdf
+from investment.tax_report.pdf.generator import generate_pdf_forms
 
 def main():
     parser = argparse.ArgumentParser(description="Generate tax report")
@@ -39,12 +23,8 @@ def main():
     income_statement, balance_sheet, holdings = accounting.generator.generate(df, end_date=end_date)
 
     if generate_pdf:
-        form8a_pdf_input_list = formgen.to_form8a_pdf_input(holdings, config.form8a_compulsory_fields())
-        idx = 0
-        for pdf_input in form8a_pdf_input_list:
-            fill_form8a_pdf(pdf_input, output_dir + "/filled_form8a_securities_and_book_entry_shares_" + str(idx) + ".pdf")
-            idx = idx + 1
-        tax_paid_abroad_entry_dtos = generate_TaxPaidAbroadEntryDTOs(income_statement.dividend_payments())
-        print("Tax Paid Abroad")
-        #pdf_generator.generate_tax_paid_abroad(tax_paid_abroad_entry_dtos, f"{config.output_dir}/tax_paid_abroad.pdf")
+        income_statement_pdf(income_statement, f"{output_dir}/income_statement.pdf", config.company_name)
+        balance_sheet_pdf(balance_sheet, f"{output_dir}/balance_sheet.pdf", config.company_name)
+        generate_pdf_forms(config.form8a_pdf_gen_config(), holdings, True)
+        generate_pdf_forms(config.form70_pdf_gen_config(), income_statement.dividend_payments(), True)
     print("Required forms in tax report generated")

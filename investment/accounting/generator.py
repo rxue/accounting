@@ -51,7 +51,7 @@ def main():
     income_statement, balance_sheet, holdings = generate(df, end_date)
     print("reconciled" if reconcile(find_cash_infusion(df), income_statement, balance_sheet) else "reconciliation failed")
     if generate_pdf:
-        from investment.accounting.financialstatements.pdfgeneration.pdf_generator import income_statement_pdf, balance_sheet_pdf
+        from investment.accounting.financialstatements.pdf.generator import income_statement_pdf, balance_sheet_pdf
         company_name = args.company
         income_statement_pdf(income_statement, f"{args.output_dir}/income_statement.pdf", company_name)
         balance_sheet_pdf(balance_sheet, f"{args.output_dir}/balance_sheet.pdf", company_name)

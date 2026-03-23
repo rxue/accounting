@@ -23,3 +23,13 @@ def find_code(description: str, section: str = None) -> str:
 
 def find_compulsory_fields() -> list[dict[str, str]]:
     return _FORM8A_SPEC[_FORM8A_SPEC["P/V"] == "P"].drop(columns=["P/V"]).to_dict(orient="records")
+
+def _load_country() -> pd.DataFrame:
+    path = Path(__file__).parent.parent.parent.parent / "data" / "country.csv"
+    return pd.read_csv(path, dtype=str)
+
+_COUNTRY = _load_country()
+
+def find_withholding_tax_name(isin_code: str) -> str:
+    match = _COUNTRY.loc[_COUNTRY["isin_code"] == isin_code, "withholding_tax_name"]
+    return match.iloc[0]

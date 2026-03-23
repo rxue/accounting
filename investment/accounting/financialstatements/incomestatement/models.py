@@ -19,6 +19,7 @@ class DividendPayment(NamedTuple):
     shares_owned: int
     dividend_per_share: float
     gross_income: float
+    witholding_tax_rate: int
     withholding_tax: float
     exchange_rate: float
 
@@ -52,8 +53,6 @@ class DividendPayment(NamedTuple):
         gross_income = to_float(gross_match.group(1)) if gross_match else 0.0
 
         tax_match = re.search(r"Lähdevero\s+[A-Z]+([\d,]+)\s*%\s+([\d,]+)\s*\w+", message)
-        withholding_tax = to_float(tax_match.group(2)) if tax_match else 0.0
-
         rate_match = re.search(r"Val\.kurssi\s+([\d,]+)", message)
         exchange_rate = to_float(rate_match.group(1)) if rate_match else 0.0
 
@@ -65,7 +64,8 @@ class DividendPayment(NamedTuple):
             shares_owned=shares_owned,
             dividend_per_share=dividend_per_share,
             gross_income=gross_income,
-            withholding_tax=withholding_tax,
+            witholding_tax_rate=int(to_float(tax_match.group(1))) if tax_match else 0,
+            withholding_tax=(to_float(tax_match.group(2)) if tax_match else 0.0),
             exchange_rate=exchange_rate,
         )
 

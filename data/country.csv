@@ -1,4 +1,4 @@
-isin_code,country_name,income_tax_name
+isin_code,country_name,withholding_tax_name
 AU,Australia,
 AT,Austria,
 BE,Belgium,
@@ -31,5 +31,3 @@ CH,Switzerland,
 TW,Taiwan,
 GB,United Kingdom,
 US,United States,US Federal Income Tax (Withholding)
-XS,Euroclear/Clearstream (international bonds),
-EU,EU institutions,

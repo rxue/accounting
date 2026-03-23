@@ -8,8 +8,8 @@ import typst
 from investment.accounting.financialstatements.balance_sheet import BalanceSheetInCent
 from investment.accounting.financialstatements.incomestatement.models import IncomeStatement
 
-_INCOME_STATEMENT_TEMPLATE = files("investment.accounting.financialstatements.pdfgeneration").joinpath("income_statement.typ")
-_BALANCE_SHEET_TEMPLATE = files("investment.accounting.financialstatements.pdfgeneration").joinpath("balance_sheet.typ")
+_INCOME_STATEMENT_TEMPLATE = files("investment.accounting.financialstatements.pdf").joinpath("income_statement.typ")
+_BALANCE_SHEET_TEMPLATE = files("investment.accounting.financialstatements.pdf").joinpath("balance_sheet.typ")
 
 
 def income_statement_pdf(income_statement: IncomeStatement, output_path: str, company_name: str = "") -> None:
