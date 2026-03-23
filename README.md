@@ -1,5 +1,7 @@
 # What is this project about
-This project generates *financial statements* and forms needed in *tax report* on base of the bank statement csv files, which are stored in a given directory
+Given the bank statement of a small investment company as input, this project generates *financial statements* and forms needed in *tax report*. 
+
+The generated forms includes Form 8A and Form 70 from verotoimisto in Finland, and they can directly be attached to veroilmoitus through vero.fi
 
 ## Demo
 
