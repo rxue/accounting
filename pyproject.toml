@@ -11,7 +11,11 @@ dependencies = [
     "typst",
     "requests",
     "pypdf",
-    "PyYAML"
+    "PyYAML",
+    "python-dotenv",
+    "pycurl",
+    "certifi",
+    "openpyxl"
 ]
 
 [tool.setuptools.packages.find]
