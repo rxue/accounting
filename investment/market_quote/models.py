@@ -8,6 +8,10 @@ class Company(NamedTuple):
     time_zone: ZoneInfo
     currency: str
 
+class PublicCompany(NamedTuple):
+    symbol: str
+    stock_exchange_symbol: str
+
 class Price(NamedTuple):
     price: float
     fx_rate: float | None = None

@@ -1,13 +1,6 @@
-from typing import NamedTuple
 import pandas as pd
 
-
-class Holding(NamedTuple):
-    isin: str
-    mic: str
-    currency: str
-    name: str
-    holdings: int
+from investment.holdings.models import Holding
 
 
 def extract_from_excel(file_path: str) -> list[Holding]:
@@ -16,10 +9,7 @@ def extract_from_excel(file_path: str) -> list[Holding]:
     return [
         Holding(
             isin=row["ISIN"],
-            mic=row["MIC"],
-            currency=row["CURRENCY"],
-            name=row["NAME"],
-            holdings=int(row["HOLDINGS"]),
+            amount=int(row["HOLDINGS"]),
         )
         for _, row in custody_rows.iterrows()
     ]
