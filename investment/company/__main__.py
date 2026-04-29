@@ -1,5 +1,5 @@
 import sys
-from investment.company.repository import find_companies_by_isin
+from investment.company.repository import find_companies_by_name
 
 COMMANDS = ["find_companies_by_isin"]
 
@@ -15,6 +15,6 @@ if command == "find_companies_by_isin":
         print("Usage: python -m investment.company find_companies_by_isin <isin1,isin2,...>")
         sys.exit(1)
     isins = sys.argv[2].split(",")
-    companies = find_companies_by_isin(*isins)
+    companies = find_companies_by_name(*isins)
     for c in companies:
         print(c)

@@ -12,5 +12,4 @@ class CompanyCode(NamedTuple):
 
 class Company(NamedTuple):
     company_code: CompanyCode
-    isin: str
     name: str
