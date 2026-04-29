@@ -28,7 +28,7 @@ elif command == "generate_holdings_snapshot":
     snapshot, companies_failed_to_get_price = HoldingsSnapshot.generate_snapshot(sys.argv[2])
     print("Bank: ", snapshot.bank)
     for h in snapshot.holdings:
-        print(h)
+        print(f"{h}")
     print()
     if len(companies_failed_to_get_price) > 0:
         print("The following companies failed to get prices")

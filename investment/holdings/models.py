@@ -7,3 +7,5 @@ class HoldingSnapshot(NamedTuple):
     company: Company
     amount: int
     price: Price
+    def __format__(self, spec) -> str:
+        return f"{self.company}{self.amount:<10}{self.price}"
