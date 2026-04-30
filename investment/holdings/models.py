@@ -1,7 +1,15 @@
+from datetime import date
 from typing import NamedTuple
 
-from investment.company.models import Company
 from investment.holdings.market_quote.yfinance_fetcher import Quote
+
+class Trading(NamedTuple):
+    company_name:str
+    action:str
+    date:date
+    amount:int
+    fee:float
+
 
 class Holding(NamedTuple):
     company_name:str
