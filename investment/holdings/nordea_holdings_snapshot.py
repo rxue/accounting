@@ -14,23 +14,22 @@ class HoldingsSnapshot(NamedTuple):
     @staticmethod
     def generate(holdings_excel_path: str) -> tuple["HoldingsSnapshot", list[str]]:
         holdings = extract_from_excel(holdings_excel_path)
-        names = [h.name for h in holdings]
+        names = [h.company_name for h in holdings]
         yahoo_symbols = find_yahoo_symbols_by_name(*names)
         snapshots = []
         failed = []
         for holding in holdings:
-            yahoo_symbol = yahoo_symbols.get(holding.name)
+            yahoo_symbol = yahoo_symbols.get(holding.company_name)
             if yahoo_symbol is None:
-                failed.append(holding.name)
+                failed.append(holding.company_name)
                 continue
             quote = get_latest_quote(yahoo_symbol)
             if quote is None:
-                failed.append(holding.name)
+                failed.append(holding.company_name)
                 continue
-            company = Company(name=holding.name)
+            company = Company(name=holding.company_name)
             snapshots.append(HoldingSnapshot(
-                company=company,
-                amount=holding.amount,
+                holding=holding,
                 quote=quote,
             ))
         snapshots.sort(key=lambda s: s.quote.daily_change_rate(), reverse=True)
