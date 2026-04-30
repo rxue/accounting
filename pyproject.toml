@@ -15,7 +15,8 @@ dependencies = [
     "python-dotenv",
     "pycurl",
     "certifi",
-    "openpyxl"
+    "openpyxl",
+    "yfinance"
 ]
 
 [tool.setuptools.packages.find]

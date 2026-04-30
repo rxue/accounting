@@ -1,11 +1,13 @@
 from typing import NamedTuple
 
 from investment.company.models import Company
-from investment.holdings.market_quote.google_finance_fetcher import Price
+from investment.holdings.market_quote.yfinance_fetcher import Quote
+
 
 class HoldingSnapshot(NamedTuple):
     company: Company
-    amount: int
-    price: Price
+    amount:int
+    quote: Quote
+
     def __format__(self, spec) -> str:
-        return f"{self.company}{self.amount:<10}{self.price}"
+        return f"{self.company}{self.amount:<10}{self.quote}"

@@ -25,7 +25,7 @@ elif command == "generate_holdings_snapshot":
     if len(sys.argv) != 3:
         print(f"Usage: python -m investment.holdings generate_holdings_snapshot <excel_file>")
         sys.exit(1)
-    snapshot, companies_failed_to_get_price = HoldingsSnapshot.generate_snapshot(sys.argv[2])
+    snapshot, companies_failed_to_get_price = HoldingsSnapshot.generate(sys.argv[2])
     print("Bank: ", snapshot.bank)
     for h in snapshot.holdings:
         print(f"{h}")

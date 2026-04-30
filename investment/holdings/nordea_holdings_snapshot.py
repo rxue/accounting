@@ -3,28 +3,35 @@ from typing import NamedTuple
 from investment.company.models import Company
 from investment.holdings.models import HoldingSnapshot
 from investment.holdings.nordea_holdings_extractor import extract_from_excel
-from investment.company.repository import find_companies_by_name
-from investment.holdings.market_quote.google_finance_fetcher import get_stock_price
+from investment.company.repository import find_yahoo_symbols_by_name
+from investment.holdings.market_quote.yfinance_fetcher import get_latest_quote
 
 
 class HoldingsSnapshot(NamedTuple):
-    bank:str
-    holdings:list[HoldingSnapshot]
+    bank: str
+    holdings: list[HoldingSnapshot]
 
     @staticmethod
-    def generate_snapshot(holdings_excel_path:str) -> tuple["HoldingsSnapshot", list[Company]]:
+    def generate(holdings_excel_path: str) -> tuple["HoldingsSnapshot", list[str]]:
         holdings = extract_from_excel(holdings_excel_path)
         names = [h.name for h in holdings]
-        companies_by_name = {c.name: c for c in find_companies_by_name(*names)}
+        yahoo_symbols = find_yahoo_symbols_by_name(*names)
         snapshots = []
-        missing_companies = []
+        failed = []
         for holding in holdings:
-            company = companies_by_name.get(holding.name)
-            if company is None:
+            yahoo_symbol = yahoo_symbols.get(holding.name)
+            if yahoo_symbol is None:
+                failed.append(holding.name)
                 continue
-            price = get_stock_price(company.company_code)
-            if price is None:
-                missing_companies.append(company)
+            quote = get_latest_quote(yahoo_symbol)
+            if quote is None:
+                failed.append(holding.name)
                 continue
-            snapshots.append(HoldingSnapshot(company=company, amount=holding.amount, price=price))
-        return HoldingsSnapshot(bank="Nordea", holdings=snapshots), missing_companies
+            company = Company(name=holding.name)
+            snapshots.append(HoldingSnapshot(
+                company=company,
+                amount=holding.amount,
+                quote=quote,
+            ))
+        snapshots.sort(key=lambda s: s.quote.daily_change_rate(), reverse=True)
+        return HoldingsSnapshot(bank="Nordea", holdings=snapshots), failed
