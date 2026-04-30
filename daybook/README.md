@@ -52,3 +52,6 @@ add to tax_report/pdf_generation/pdf_generator.py a function called generate_Lis
 # 20260317
 ## Python learning tips
 In Python, the name of a *module*, i.e. a Python file, is rarely named with verb. This is logic when taking the functions inside the module into consideration. Functions inside a Python module is named with verb by nature, so if the module is also named with verb, it is against intuition
+
+# 20260430
+Google Finance is not a good source to get the stock quotes. The daily change rate on the Google Finance page is parsed from Javascript, but the *pycurl* by nature is not parsing Javascript
