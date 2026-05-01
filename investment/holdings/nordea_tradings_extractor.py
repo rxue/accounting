@@ -1,17 +1,19 @@
 import re
 from datetime import datetime
+from typing import get_args
 
 import pdfplumber
 
-from investment.holdings.models import Trading
+from investment.holdings.models import Action, TradingLot
+from investment.holdings.return_calculation import ReturnBreakdown
 
 _TRANSACTION_RE = re.compile(
-    r'(Withdrawal|Deposit)\s+(\d{2}\.\d{2}\.\d{2})\s+(\d+)\s+[\d,]+\s+([\d,]+)'
+    r'(' + '|'.join(get_args(Action)) + r')\s+(\d{2}\.\d{2}\.\d{2})\s+(\d+)\s+([\d,]+)\s+([\d,]+)'
 )
-_COMPANY_RE = re.compile(r'^[A-Z][A-Z ]+$')
+_COMPANY_RE = re.compile(r'^[A-Z][A-Z &.\-]+$')
 
 #ai-generated
-def extract(pdf_file_path: str) -> list[Trading]:
+def extract(pdf_file_path: str) -> ReturnBreakdown:
     tradings = []
     current_company = None
     with pdfplumber.open(pdf_file_path) as pdf:
@@ -23,12 +25,13 @@ def extract(pdf_file_path: str) -> list[Trading]:
                     continue
                 m = _TRANSACTION_RE.search(line)
                 if m and current_company:
-                    action, date_str, amount, fee_str = m.groups()
-                    tradings.append(Trading(
+                    action, date_str, amount, trade_price_str, charge_str = m.groups()
+                    tradings.append(TradingLot(
                         company_name=current_company,
                         action=action,
                         date=datetime.strptime(date_str, "%d.%m.%y").date(),
                         amount=int(amount),
-                        fee=float(fee_str.replace(",", ".")),
+                        trade_price=float(trade_price_str.replace(",", ".")),
+                        charge=float(charge_str.replace(",", ".")),
                     ))
-    return tradings
+    return ReturnBreakdown(tradings)

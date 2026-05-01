@@ -1,12 +1,14 @@
 import sys
 from investment.holdings.nordea_holdings_extractor import extract_from
 from investment.holdings.holdings_snapshot import HoldingsSnapshot
-from investment.holdings.nordea_tradings_extractor import extract as extract_tradings
+from investment.holdings.nordea_tradings_extractor import extract
+from investment.holdings.return_calculation import calculate_total_return
 
 EXTRACT_HOLDINGS = "extract_from_nordea_excel"
-EXTRACT_TRADINGS = "extract_tradings_from_nordea_pdf"
+EXTRACT_RETURN_BREAKDOWN = "extract_return_breakdown_from_nordea_pdf"
+TOTAL_RETURN = "total_return"
 
-COMMANDS = [EXTRACT_HOLDINGS, "generate_holdings_snapshot", EXTRACT_TRADINGS]
+COMMANDS = [EXTRACT_HOLDINGS, "generate_holdings_snapshot", EXTRACT_RETURN_BREAKDOWN, TOTAL_RETURN]
 
 if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:
     print(f"Usage: python -m investment.holdings <command> [args]")
@@ -23,12 +25,18 @@ if command == EXTRACT_HOLDINGS:
     for h in holdings:
         print(h)
 
-elif command == EXTRACT_TRADINGS:
+elif command == EXTRACT_RETURN_BREAKDOWN:
     if len(sys.argv) != 3:
-        print(f"Usage: python -m investment.holdings {EXTRACT_TRADINGS} <pdf_file>")
+        print(f"Usage: python -m investment.holdings {EXTRACT_RETURN_BREAKDOWN} <pdf_file>")
         sys.exit(1)
-    for trading in extract_tradings(sys.argv[2]):
-        print(trading)
+    return_breakdown = extract(sys.argv[2])
+    print(f"capital gain: {return_breakdown.total_capital_gain_in_cent()/100}")
+    print(f"capital loss: {return_breakdown.total_capital_loss_in_cent()/100}")
+elif command == TOTAL_RETURN:
+    if len(sys.argv) != 3:
+        print(f"Usage: python -m investment.holdings {TOTAL_RETURN} <pdf_dir>")
+        sys.exit(1)
+    print(calculate_total_return(sys.argv[2]))
 
 elif command == "generate_holdings_snapshot":
     if len(sys.argv) != 3:

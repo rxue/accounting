@@ -1,15 +1,22 @@
 from datetime import date
-from typing import NamedTuple
+from typing import Literal, NamedTuple
 
 from investment.holdings.market_quote.yfinance_fetcher import Quote
 
-class Trading(NamedTuple):
+Type = Literal["GAIN", "LOSS"]
+Action = Literal["Withdrawal", "Deposit"]
+
+class ValuationResult(NamedTuple):
+    type: Type
+    value:float
+
+class TradingLot(NamedTuple):
     company_name:str
-    action:str
+    action:Action
     date:date
     amount:int
-    fee:float
-
+    trade_price:float
+    charge:float
 
 class Holding(NamedTuple):
     company_name:str
