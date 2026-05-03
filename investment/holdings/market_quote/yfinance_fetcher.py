@@ -11,6 +11,7 @@ class Quote(NamedTuple):
     daily_change:float
     timestamp:datetime
     pe:int
+    roe:float
     def daily_change_rate(self)->float:
         return self.daily_change / (self.price-self.daily_change)
     def timestamp_repr(self) -> str:
@@ -25,6 +26,7 @@ def get_latest_quote(symbol: str) -> Quote | None:
     market_time = info.get("regularMarketTime")
     time_zone = info.get("exchangeTimezoneName")
     pe = info.get("trailingPE")
+    roe = info.get("returnOnEquity")
     if price is None or currency is None or daily_change is None or market_time is None or time_zone is None:
         return None
     return Quote(price=price,
@@ -32,7 +34,8 @@ def get_latest_quote(symbol: str) -> Quote | None:
                  dividend_yield=dividend_yield,
                  daily_change=daily_change,
                  timestamp=datetime.fromtimestamp(market_time, tz=ZoneInfo(time_zone)),
-                 pe=int(round(pe)) if pe is not None else None)
+                 pe=int(round(pe)) if pe is not None else None,
+                 roe=roe)
 
 
 

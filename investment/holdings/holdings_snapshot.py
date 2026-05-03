@@ -47,6 +47,7 @@ class HoldingsSnapshot(NamedTuple):
                 "daily_change": s.quote.daily_change_rate(),
                 "dividend_yield": s.quote.dividend_yield,
                 "pe": s.quote.pe,
+                "roe": s.quote.roe,
                 "timestamp": s.quote.timestamp_repr(),
             }
             for s in self.holdings
