@@ -3,10 +3,6 @@ from html.parser import HTMLParser
 import pycurl
 from io import BytesIO
 
-from investment.company.models import CompanyCode
-from investment.holdings.market_quote.model import Price
-
-
 def _fetch_html(ticker: str) -> str:
     url = f"https://www.google.com/finance/quote/{ticker}"
     buffer = BytesIO()
