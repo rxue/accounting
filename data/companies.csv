@@ -1,4 +1,4 @@
-company_name,isin,symbol,stock_exchange_symbol,stock_symbol_yahoo
+company_name,isin,symbol,stock_exchange_symbol,stock_symbol_yahoo,dividend_info_resource
 Fortum Oyj,FI0009007132,FORTUM,HEL,FORTUM.HE
 Enbridge,CA29250N1050,ENB,TSE,ENB.TO
 Moderna Inc,US60770K1079,MRNA,NASDAQ,MRNA
@@ -8,7 +8,7 @@ British American Tobacco,GB0002875804,BATS,LON,BATS.L
 Sirius XM Holdings Inc,US8299331004,SIRI,NASDAQ,SIRI
 Biontech SE ADR,US09075V1026,BNTX,NASDAQ,BNTX
 Sampo Oyj A,FI4000552500,SAMPO,HEL,SAMPO.HE
-Mandatum,FI4000552526,MANTA,HEL,MANTA.HE
+Mandatum,FI4000552526,MANTA,HEL,MANTA.HE,https://www.mandatum.fi/en/group/investors/share/dividend/
 Altria Group Inc,US02209S1033,MO,NYSE,MO
 US Bancorp,US9029733048,USB,NYSE,USB
 Finnair Oyj,FI4000567029,FIA1S,HEL,FIA1S.HE

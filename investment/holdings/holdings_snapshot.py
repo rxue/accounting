@@ -33,7 +33,7 @@ class HoldingsSnapshot(NamedTuple):
                 holding=holding,
                 quote=quote,
             ))
-        snapshots.sort(key=lambda s: s.quote.daily_change_rate(), reverse=True)
+        snapshots.sort(key=lambda s: s.quote.daily_change, reverse=True)
         bank_name=Path(holdings_excel_path).name.split("_")[0]
         return HoldingsSnapshot(bank=bank_name, holdings=snapshots), failed
 
@@ -44,8 +44,8 @@ class HoldingsSnapshot(NamedTuple):
                 "amount": s.holding.amount,
                 "price": s.quote.price,
                 "currency": s.quote.currency,
-                "daily_change": s.quote.daily_change_percentage(),
-                "dividend_yield": s.quote.dividend_yield_percentage(),
+                "daily_change": s.quote.daily_change_rate(),
+                "dividend_yield": s.quote.dividend_yield,
                 "timestamp": s.quote.timestamp_repr(),
             }
             for s in self.holdings

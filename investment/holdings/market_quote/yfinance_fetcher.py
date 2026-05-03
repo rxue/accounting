@@ -10,18 +10,10 @@ class Quote(NamedTuple):
     dividend_yield:float
     daily_change:float
     timestamp:datetime
-    def daily_change_rate(self) -> float:
-        return self.daily_change / (self.price - self.daily_change)
-    def daily_change_percentage(self) -> str:
-        return f"{self.daily_change_rate() * 100:.2f}%"
+    def daily_change_rate(self)->float:
+        return self.daily_change / (self.price-self.daily_change)
     def timestamp_repr(self) -> str:
         return self.timestamp.strftime("%Y-%m-%d %H:%M %Z")
-    def dividend_yield_percentage(self) -> str:
-        if self.dividend_yield is None:
-            return "N/A"
-        return f"{self.dividend_yield:.2f}%"
-    def __format__(self,spec):
-        return f"{self.price:<10}{self.currency:<5s}{self.daily_change_percentage():<10s}{self.dividend_yield_percentage():<10s}{self.timestamp_repr()}"
 
 def get_latest_quote(symbol: str) -> Quote | None:
     info = yf.Ticker(symbol).info
