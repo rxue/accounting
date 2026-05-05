@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import date
 from enum import Enum, auto
 from typing import Literal, NamedTuple
@@ -6,7 +7,6 @@ from investment.holdings.market_quote.yfinance_fetcher import Quote
 
 Type = Literal["GAIN", "LOSS"]
 
-
 class Action(Enum):
     BUY = auto()
     SELL = auto()
@@ -14,8 +14,8 @@ class Action(Enum):
 class ValuationResult(NamedTuple):
     type: Type
     value:float
-
-class NordeaTradingLot(NamedTuple):
+@dataclass(frozen=True)
+class NordeaTradingLot:
     company_identifier:str
     action:str
     date:date
