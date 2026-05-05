@@ -26,7 +26,7 @@ def extract(pdf_file_path: str) -> ReturnBreakdown:
                 if m and current_company:
                     action, date_str, amount, trade_price_str, charge_str = m.groups()
                     tradings.append(NordeaTradingLot(
-                        company_symbol=current_company,
+                        company_identifier=current_company,
                         action=action,
                         date=datetime.strptime(date_str, "%d.%m.%y").date(),
                         amount=int(amount),
