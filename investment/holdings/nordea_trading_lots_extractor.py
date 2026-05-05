@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pdfplumber
 
-from investment.holdings.models import Action, TradingLot
+from investment.holdings.models import Action, NordeaTradingLot
 from investment.holdings.return_calculation import ReturnBreakdown
 
 _TRANSACTION_RE = re.compile(
@@ -25,9 +25,9 @@ def extract(pdf_file_path: str) -> ReturnBreakdown:
                 m = _TRANSACTION_RE.search(line)
                 if m and current_company:
                     action, date_str, amount, trade_price_str, charge_str = m.groups()
-                    tradings.append(TradingLot(
+                    tradings.append(NordeaTradingLot(
                         company_symbol=current_company,
-                        action=Action.BUY if action == "Deposit" else Action.SELL,
+                        action=action,
                         date=datetime.strptime(date_str, "%d.%m.%y").date(),
                         amount=int(amount),
                         trade_price=float(trade_price_str.replace(",", ".")),

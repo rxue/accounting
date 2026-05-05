@@ -1,15 +1,15 @@
-from investment.holdings.models import Action, TradingLot
+from investment.holdings.models import NordeaTradingLot
 
 
 class ReturnBreakdown:
-    def __init__(self, trading_lots: list[TradingLot]):
+    def __init__(self, trading_lots: list[NordeaTradingLot]):
         self.trading_lots = trading_lots
 
     def _net_result_per_group_in_cent(self) -> list[int]:
         results = []
         group_total = None
         for lot in self.trading_lots:
-            if lot.action == Action.SELL:
+            if lot.action == "Withdrawal":
                 if group_total is not None:
                     results.append(round(group_total * 100))
                 group_total = lot.trade_price - lot.charge

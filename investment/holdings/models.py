@@ -15,9 +15,9 @@ class ValuationResult(NamedTuple):
     type: Type
     value:float
 
-class TradingLot(NamedTuple):
+class NordeaTradingLot(NamedTuple):
     company_symbol:str
-    action:Action
+    action:str
     date:date
     amount:int
     trade_price:float
