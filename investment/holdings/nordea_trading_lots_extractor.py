@@ -1,6 +1,5 @@
 import re
 from datetime import datetime
-from typing import get_args
 
 import pdfplumber
 
@@ -8,7 +7,7 @@ from investment.holdings.models import Action, TradingLot
 from investment.holdings.return_calculation import ReturnBreakdown
 
 _TRANSACTION_RE = re.compile(
-    r'(' + '|'.join(get_args(Action)) + r')\s+(\d{2}\.\d{2}\.\d{2})\s+(\d+)\s+([\d,]+)\s+([\d,]+)'
+    r'(' + 'Withdrawal|Deposit' + r')\s+(\d{2}\.\d{2}\.\d{2})\s+(\d+)\s+([\d,]+)\s+([\d,]+)'
 )
 _COMPANY_RE = re.compile(r'^[A-Z][A-Z &.\-]+$')
 
@@ -27,8 +26,8 @@ def extract(pdf_file_path: str) -> ReturnBreakdown:
                 if m and current_company:
                     action, date_str, amount, trade_price_str, charge_str = m.groups()
                     tradings.append(TradingLot(
-                        company_name=current_company,
-                        action=action,
+                        company_symbol=current_company,
+                        action=Action.BUY if action == "Deposit" else Action.SELL,
                         date=datetime.strptime(date_str, "%d.%m.%y").date(),
                         amount=int(amount),
                         trade_price=float(trade_price_str.replace(",", ".")),

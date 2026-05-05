@@ -3,9 +3,11 @@ from pathlib import Path
 import pandas as pd
 
 from investment.holdings.models import Holding
+from investment.holdings.util import extract_csv
+
 
 def extract_from_nordnet_csv(file_path: str) -> list[Holding]:
-    df = pd.read_csv(file_path, encoding="utf-16", sep="\t")
+    df = extract_csv(file_path)
     return [
         Holding(
             company_name=row["Nimi"].strip(),

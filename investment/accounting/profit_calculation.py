@@ -1,5 +1,3 @@
-import datetime
-
 import pandas as pd
 
 from investment.accounting.models import Lot, ProfitCalculationResult

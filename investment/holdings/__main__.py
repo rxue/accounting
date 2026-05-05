@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 from investment.holdings.nordea_holdings_extractor import extract_from
 from investment.holdings.holdings_snapshot import HoldingsSnapshot
-from investment.holdings.nordea_tradings_extractor import extract
+from investment.holdings.nordea_trading_lots_extractor import extract
 from investment.holdings.return_calculation import calculate_total_return
 
 
@@ -51,6 +51,6 @@ elif command == GENERATE_HOLDINGS_SNAPSHOT:
     holdings_snapshot_df["daily_change"] = holdings_snapshot_df["daily_change"].map(lambda x: f"{x*100:+.2f}%")
     holdings_snapshot_df["dividend_yield"] = holdings_snapshot_df["dividend_yield"].map(lambda x: f"{x:.2f}%" if not pd.isna(x) else "N/A")
     holdings_snapshot_df["roe"] = holdings_snapshot_df["roe"].map(lambda x: f"{x*100:.2f}%" if not pd.isna(x) else "N/A")
-print(holdings_snapshot_df)
-for c in companies_failed_to_get_price:
-    print(f"{c} failed to get price")
+    print(holdings_snapshot_df)
+    for c in companies_failed_to_get_price:
+        print(f"{c} failed to get price")

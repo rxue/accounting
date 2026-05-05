@@ -1,17 +1,22 @@
 from datetime import date
+from enum import Enum, auto
 from typing import Literal, NamedTuple
 
 from investment.holdings.market_quote.yfinance_fetcher import Quote
 
 Type = Literal["GAIN", "LOSS"]
-Action = Literal["Withdrawal", "Deposit"]
+
+
+class Action(Enum):
+    BUY = auto()
+    SELL = auto()
 
 class ValuationResult(NamedTuple):
     type: Type
     value:float
 
 class TradingLot(NamedTuple):
-    company_name:str
+    company_symbol:str
     action:Action
     date:date
     amount:int

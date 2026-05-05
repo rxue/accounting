@@ -1,4 +1,4 @@
-from investment.holdings.models import TradingLot
+from investment.holdings.models import Action, TradingLot
 
 
 class ReturnBreakdown:
@@ -9,7 +9,7 @@ class ReturnBreakdown:
         results = []
         group_total = None
         for lot in self.trading_lots:
-            if lot.action == "Withdrawal":
+            if lot.action == Action.SELL:
                 if group_total is not None:
                     results.append(round(group_total * 100))
                 group_total = lot.trade_price - lot.charge
@@ -35,7 +35,7 @@ class ReturnCalculator:
 
 def calculate_total_return(input_dir: str) -> float:
     import os
-    from investment.holdings.nordea_tradings_extractor import extract
+    from investment.holdings.nordea_trading_lots_extractor import extract
     breakdowns = []
     for filename in sorted(os.listdir(input_dir)):
         if filename.endswith('.pdf'):
