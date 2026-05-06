@@ -1,10 +1,23 @@
 import csv
 from pathlib import Path
 
-from investment.company.models import Company
+from investment.holdings.company.models import Company
 
-_CSV_PATH = Path(__file__).parents[2] / "data" / "companies.csv"
+_CSV_PATH = Path(__file__).parents[3] / "data" / "companies.csv"
 
+
+def _fill_companies_cache() -> dict[str, str]:
+    result = {}
+    with open(_CSV_PATH, newline="") as f:
+        for row in csv.DictReader(f):
+            current_company_symbol = row["op_symbol"]
+            result[current_company_symbol] = row["company_name"]
+    return result
+
+companies_cache = _fill_companies_cache()
+
+def find_company_name_by_symbol(symbol:str) -> str | None:
+    return companies_cache.get(symbol)
 
 def find_companies_by_name(*names: str) -> list[Company]:
     name_set = set(names)

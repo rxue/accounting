@@ -1,4 +1,4 @@
-from investment.holdings.models import NordeaTradingLot
+from investment.holdings.model import NordeaTradingLot
 
 
 class ReturnBreakdown:

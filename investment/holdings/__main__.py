@@ -1,6 +1,6 @@
 import sys
 import pandas as pd
-from investment.holdings.nordea_holdings_extractor import extract_from
+from investment.holdings.holdings_extractor import extract_from
 from investment.holdings.holdings_snapshot import HoldingsSnapshot
 from investment.holdings.nordea_trading_lots_extractor import extract
 from investment.holdings.return_calculation import calculate_total_return

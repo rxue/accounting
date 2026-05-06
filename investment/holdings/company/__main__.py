@@ -1,5 +1,5 @@
 import sys
-from investment.company.repository import find_companies_by_name
+from investment.holdings.company.repository import find_companies_by_name
 
 COMMANDS = ["find_companies_by_isin"]
 

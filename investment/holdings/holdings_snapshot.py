@@ -3,9 +3,9 @@ from typing import NamedTuple
 
 import pandas as pd
 
-from investment.holdings.models import HoldingSnapshot
-from investment.holdings.nordea_holdings_extractor import extract_from
-from investment.company.repository import find_yahoo_symbols_by_name
+from investment.holdings.models.holdings import HoldingSnapshot
+from investment.holdings.holdings_extractor import extract_from
+from investment.holdings.company.repository import find_yahoo_symbols_by_name
 from investment.holdings.market_quote.yfinance_fetcher import get_latest_quote
 
 
